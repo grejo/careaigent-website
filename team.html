@@ -3,60 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Evenement: AI en technologie in de zorg — 12 mei 2026 · CareAIgent</title>
-<meta name="description" content="Schrijf je gratis in voor het CareAIgent-evenement 'AI en technologie in de zorg' op 12 mei 2026 in Hasselt. Sessies, praktijkcases en interactieve workshops over AI in de Vlaamse zorgsector.">
-<meta name="keywords" content="evenement AI zorg, studiedag AI zorgsector, CareAIgent Hasselt, PXL evenement zorg, inschrijven AI zorgverleners">
+<title>Ons Team — CareAIgent</title>
+<meta name="description" content="Maak kennis met het CareAIgent-team van PXL Zorginnovatie: de onderzoekers en experten die werken aan AI-oplossingen voor de Vlaamse zorgsector.">
+<meta name="keywords" content="CareAIgent team, PXL Zorginnovatie onderzoekers, AI zorg team, Eric Lodewyckx, Isabel Kortleven, Tom Hermans, Robin Schrijvers, Joachim Gregoor">
 <meta name="author" content="CareAIgent — PXL Zorginnovatie">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://careaigent.be/evenement">
+<link rel="canonical" href="https://careaigent.be/team">
 
 <!-- Open Graph -->
-<meta property="og:type" content="event">
-<meta property="og:url" content="https://careaigent.be/evenement">
-<meta property="og:title" content="AI en technologie in de zorg — 12 mei 2026 · CareAIgent">
-<meta property="og:description" content="Schrijf je gratis in voor het CareAIgent-evenement op 12 mei 2026 in Hasselt. Sessies, praktijkcases en workshops over AI in de Vlaamse zorgsector.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://careaigent.be/team">
+<meta property="og:title" content="Ons Team — CareAIgent">
+<meta property="og:description" content="Maak kennis met het CareAIgent-team van PXL Zorginnovatie: de onderzoekers en experten die werken aan AI-oplossingen voor de Vlaamse zorgsector.">
 <meta property="og:site_name" content="CareAIgent">
 <meta property="og:locale" content="nl_BE">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AI en technologie in de zorg — 12 mei 2026 · CareAIgent">
-<meta name="twitter:description" content="Schrijf je gratis in voor het CareAIgent-evenement op 12 mei 2026 in Hasselt. Sessies, praktijkcases en workshops over AI in de Vlaamse zorgsector.">
+<meta name="twitter:title" content="Ons Team — CareAIgent">
+<meta name="twitter:description" content="Maak kennis met het CareAIgent-team van PXL Zorginnovatie.">
 
 <!-- Structured Data -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "EducationEvent",
-  "name": "AI en technologie in de zorg",
-  "url": "https://careaigent.be/evenement",
-  "description": "Een studiedag over de inzet van AI en technologie in de Vlaamse zorgsector. Met sessies, praktijkcases en interactieve workshops voor zorgprofessionals en technologiebedrijven.",
-  "startDate": "2026-05-12",
-  "eventStatus": "https://schema.org/EventScheduled",
-  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-  "isAccessibleForFree": true,
-  "inLanguage": "nl-BE",
-  "location": {
-    "@type": "Place",
-    "name": "PXL Hasselt",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Hasselt",
-      "addressRegion": "Limburg",
-      "addressCountry": "BE"
-    }
-  },
-  "organizer": {
-    "@type": "EducationalOrganization",
-    "name": "PXL Zorginnovatie",
-    "url": "https://www.pxl.be/"
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "EUR",
-    "url": "https://ins.pxl.be/Seminar/107950514",
-    "availability": "https://schema.org/InStock"
+  "@type": "WebPage",
+  "name": "Ons Team — CareAIgent",
+  "url": "https://careaigent.be/team",
+  "description": "Het CareAIgent-team van PXL Zorginnovatie",
+  "isPartOf": {
+    "@type": "ResearchProject",
+    "name": "CareAIgent",
+    "url": "https://careaigent.be/"
   }
 }
 </script>
@@ -112,118 +90,126 @@
   /* HERO */
   .hero {
     background: var(--navy);
-    padding: 130px 48px 70px;
-    position: relative; overflow: hidden;
+    padding: 130px 48px 80px;
+    position: relative;
+    overflow: hidden;
   }
   .hero::before {
     content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse 70% 60% at 80% 50%, rgba(33,154,189,0.08) 0%, transparent 70%);
+    background: radial-gradient(ellipse 70% 60% at 80% 40%, rgba(33,154,189,0.12) 0%, transparent 70%);
+    pointer-events: none;
   }
-  .hero-inner { max-width: 860px; position: relative; }
-  .back-link {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 13px; color: rgba(255,255,255,0.5); text-decoration: none;
-    margin-bottom: 28px; transition: color 0.2s;
-  }
-  .back-link:hover { color: var(--teal-light); }
-  .event-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(33,154,189,0.12); border: 1px solid rgba(33,154,189,0.35);
-    color: var(--teal-light); font-size: 12px; font-weight: 600;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    padding: 6px 14px; border-radius: 100px; margin-bottom: 24px;
+  .hero-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero-badge {
+    display: inline-block;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    background: rgba(33,154,189,0.12);
+    border: 1px solid rgba(33,154,189,0.25);
+    border-radius: 20px;
+    padding: 6px 16px;
+    margin-bottom: 28px;
   }
   .hero h1 {
-    font-family: 'Raleway', sans-serif; font-weight: 900;
-    font-size: clamp(32px, 5vw, 58px); line-height: 1.1;
-    letter-spacing: -1.5px; color: #fff; margin-bottom: 28px;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 900;
+    font-size: clamp(36px, 6vw, 56px);
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 20px;
   }
-  .event-meta {
-    display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 36px;
-  }
-  .event-meta-item {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 15px; color: rgba(255,255,255,0.75);
-  }
-  .event-meta-item svg { color: var(--teal-light); flex-shrink: 0; }
-  .event-meta-item strong { color: #fff; }
-  .btn-primary {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--teal); color: #fff;
-    font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 15px;
-    padding: 14px 28px; border-radius: 8px; text-decoration: none;
-    transition: all 0.2s;
-  }
-  .btn-primary:hover { background: var(--teal-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(33,154,189,0.35); }
-
-  /* CONTENT */
-  .content-wrap {
-    max-width: 860px; margin: 0 auto; padding: 72px 48px 100px;
+  .hero h1 em { color: var(--teal-light); font-style: normal; }
+  .hero p {
+    font-size: 18px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.7;
+    max-width: 560px;
   }
 
-  .section-block { margin-bottom: 56px; }
-  .section-block h2 {
-    font-family: 'Raleway', sans-serif; font-weight: 800;
-    font-size: 22px; color: var(--navy); margin-bottom: 16px;
-    padding-bottom: 12px; border-bottom: 2px solid var(--teal);
-    display: inline-block;
+  /* TEAM GRID */
+  .team-section {
+    background: var(--off-white);
+    padding: 80px 48px 100px;
   }
-  .section-block p {
-    font-size: 16px; line-height: 1.8; color: var(--text-mid); margin-bottom: 14px;
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    max-width: 1100px;
+    margin: 0 auto;
   }
-
-  /* PROGRAMMA */
-  .program-timeline { display: flex; flex-direction: column; gap: 0; }
-  .prog-row {
-    display: grid; grid-template-columns: 72px 1fr;
-    gap: 0 20px; position: relative; padding: 14px 0;
-    border-bottom: 1px solid rgba(0,40,65,0.07);
+  .team-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 40px 32px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: 1px solid rgba(0,40,65,0.07);
+    box-shadow: 0 2px 16px rgba(0,40,65,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
   }
-  .prog-row:last-child { border-bottom: none; }
-  .prog-time-col {
-    font-family: 'Raleway', sans-serif; font-weight: 700;
-    font-size: 13px; color: var(--teal); padding-top: 2px;
+  .team-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,40,65,0.1);
   }
-  .prog-desc { font-size: 15px; color: var(--text-dark); line-height: 1.5; }
-  .prog-desc strong { color: var(--navy); }
-  .prog-row.keynote { background: rgba(33,154,189,0.04); border-radius: 6px; padding: 14px 12px; }
-  .prog-row.break .prog-desc { color: var(--text-mid); font-style: italic; }
-  .prog-row.highlight .prog-desc { font-weight: 600; color: var(--navy); }
-
-  .program-section-label {
-    font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--teal-light); margin: 28px 0 8px;
-    display: flex; align-items: center; gap: 8px;
+  .team-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--teal-dark) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    color: #fff;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+    flex-shrink: 0;
   }
-  .program-section-label::before { content: ''; width: 20px; height: 2px; background: var(--teal); }
-
-  /* WORKSHOPS */
-  .workshops-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 12px; margin-top: 16px;
+  .team-name {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--text-dark);
+    margin-bottom: 6px;
   }
-  .workshop-card {
-    background: var(--off-white); border: 1px solid rgba(0,40,65,0.1);
-    border-left: 3px solid var(--teal); border-radius: 8px;
-    padding: 14px 16px; font-size: 14px; color: var(--text-dark); line-height: 1.5;
+  .team-role {
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.5;
+    margin-bottom: 24px;
+    flex: 1;
   }
-
-  /* INSCHRIJVING CTA */
-  .cta-box {
-    background: var(--navy);
-    border-radius: 20px; padding: 48px;
-    text-align: center; margin-top: 56px;
+  .linkedin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #0A66C2;
+    color: #fff;
+    text-decoration: none;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.15s;
   }
-  .cta-box h2 {
-    font-family: 'Raleway', sans-serif; font-weight: 900;
-    font-size: 28px; color: #fff; margin-bottom: 12px;
+  .linkedin-btn:hover {
+    background: #004182;
+    transform: scale(1.03);
   }
-  .cta-box p { font-size: 15px; color: rgba(255,255,255,0.65); margin-bottom: 28px; }
-  .cta-box .free-badge {
-    display: inline-block; background: rgba(33,154,189,0.2);
-    border: 1px solid rgba(33,154,189,0.4); color: var(--teal-light);
-    font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
-    padding: 5px 14px; border-radius: 100px; margin-bottom: 24px;
+  .linkedin-btn svg { flex-shrink: 0; }
+  .no-linkedin {
+    font-size: 12px;
+    color: rgba(0,40,65,0.3);
+    padding: 9px 0;
   }
 
   /* ===== FOOTER ===== */
@@ -232,7 +218,6 @@
     border-top: 1px solid rgba(33,154,189,0.2);
     padding: 0;
   }
-
   .footer-inner {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
@@ -241,115 +226,35 @@
     max-width: 1200px;
     margin: 0 auto;
   }
-
   .footer-brand {}
-
-  .footer-logo-row {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-
-  .footer-logo-img {
-    height: 44px;
-    width: auto;
-    object-fit: contain;
-  }
-
-  /* PXL Zorginnovatie is dark-on-transparent — white pill */
-  .footer-logo-light {
-    background: rgba(255,255,255,0.9);
-    border-radius: 8px;
-    padding: 6px 10px;
-    height: 48px;
-  }
-
-  /* VLAIO is green-on-white — white pill */
-  .footer-logo-vlaio {
-    background: rgba(255,255,255,0.9);
-    border-radius: 8px;
-    padding: 6px 10px;
-    height: 48px;
-  }
-
-  .footer-divider {
-    width: 1px;
-    height: 36px;
-    background: rgba(255,255,255,0.15);
-  }
-
-  .footer-tagline {
-    font-size: 13px;
-    color: rgba(255,255,255,0.4);
-    line-height: 1.6;
-    max-width: 280px;
-  }
-
-  .footer-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .footer-nav-title {
-    font-family: 'Raleway', sans-serif;
-    font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--teal-light);
-    margin-bottom: 8px;
-  }
-
-  .footer-nav a {
-    font-size: 14px;
-    color: rgba(255,255,255,0.55);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
+  .footer-logo-row { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+  .footer-logo-img { height: 44px; width: auto; object-fit: contain; }
+  .footer-logo-light { background: rgba(255,255,255,0.9); border-radius: 8px; padding: 6px 10px; height: 48px; }
+  .footer-logo-vlaio { background: rgba(255,255,255,0.9); border-radius: 8px; padding: 6px 10px; height: 48px; }
+  .footer-divider { width: 1px; height: 36px; background: rgba(255,255,255,0.15); }
+  .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.6; max-width: 280px; }
+  .footer-nav { display: flex; flex-direction: column; gap: 10px; }
+  .footer-nav-title { font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--teal-light); margin-bottom: 8px; }
+  .footer-nav a { font-size: 14px; color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; }
   .footer-nav a:hover { color: var(--teal-light); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding: 20px 48px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,0.25); max-width: 100%; }
+  .footer-bottom-right { color: rgba(255,255,255,0.2); }
 
-  .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding: 20px 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 12px;
-    color: rgba(255,255,255,0.25);
-    max-width: 100%;
+  @media (max-width: 900px) {
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
   }
-
-  .footer-bottom-right {
-    color: rgba(255,255,255,0.2);
-  }
-
-  @media (max-width: 768px) {
-    .footer-inner {
-      grid-template-columns: 1fr;
-      padding: 40px 20px 32px;
-      gap: 32px;
-    }
-    .footer-bottom {
-      flex-direction: column;
-      gap: 8px;
-      text-align: center;
-      padding: 16px 20px;
-    }
-  }
-
-  /* ===== END FOOTER ===== */
-
   @media (max-width: 768px) {
     nav { padding: 0 20px; }
     .nav-links { display: none; }
     .hamburger { display: flex; }
     .hero { padding: 110px 20px 60px; }
-    .content-wrap { padding: 48px 20px 72px; }
-    .cta-box { padding: 32px 24px; }
+    .team-section { padding: 60px 20px 80px; }
+    .team-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .footer-inner { grid-template-columns: 1fr; padding: 40px 20px 32px; gap: 32px; }
+    .footer-bottom { flex-direction: column; gap: 8px; text-align: center; padding: 16px 20px; }
+  }
+  @media (max-width: 480px) {
+    .team-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -389,101 +294,70 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
-    <a class="back-link" href="index.html#agenda">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      Terug naar agenda
-    </a>
-    <div class="event-badge">Technologiebeurs · Netwerkevent</div>
-    <h1>AI en technologie in de zorg</h1>
-    <div class="event-meta">
-      <div class="event-meta-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span><strong>12 mei 2026</strong></span>
-      </div>
-      <div class="event-meta-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span><strong>9u00 – 16u30</strong></span>
-      </div>
-      <div class="event-meta-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <span><strong>BluePoint Antwerpen</strong> · Filip Williotstraat 9, 2600 Antwerpen</span>
-      </div>
-    </div>
-    <a href="https://ins.pxl.be/Seminar/107950514" target="_blank" rel="noopener" class="btn-primary">
-      Inschrijven — gratis
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
+    <div class="hero-badge">CareAIgent · PXL Zorginnovatie</div>
+    <h1>Ons <em>team</em></h1>
+    <p>De mensen achter CareAIgent — onderzoekers en experten die samenwerken aan AI-oplossingen voor de Vlaamse zorgsector.</p>
   </div>
 </section>
 
-<!-- CONTENT -->
-<div class="content-wrap">
+<!-- TEAM GRID -->
+<section class="team-section">
+  <div class="team-grid">
 
-  <!-- Beschrijving -->
-  <div class="section-block">
-    <h2>Over het evenement</h2>
-    <p>
-      Op 12 mei brengen <strong>CareAIgent</strong> en <strong>Zorgproeftuinen</strong> zorgprofessionals, onderzoekers, beleidsmakers en technologiepartners samen voor een inspirerende technologiebeurs rond AI in de zorg.
-    </p>
-    <p>
-      Ontdek hoe artificiële intelligentie concreet kan bijdragen aan het verminderen van administratieve lasten, efficiëntere zorgprocessen en meer tijd voor kwalitatieve patiëntenzorg. De dag combineert keynotes van toonaangevende sprekers, een netwerkbeurs en interactieve workshops.
-    </p>
-  </div>
-
-  <!-- Programma -->
-  <div class="section-block">
-    <h2>Programma</h2>
-
-    <div class="program-section-label">Ochtend</div>
-    <div class="program-timeline">
-      <div class="prog-row"><span class="prog-time-col">9u00</span><span class="prog-desc">Ontvangst &amp; registratie</span></div>
-      <div class="prog-row"><span class="prog-time-col">9u30</span><span class="prog-desc">Introductie</span></div>
-      <div class="prog-row keynote"><span class="prog-time-col">9u45</span><span class="prog-desc"><strong>Keynote 1</strong> — Dado van Peteghem</span></div>
-      <div class="prog-row keynote"><span class="prog-time-col">10u30</span><span class="prog-desc"><strong>Keynote 2</strong> — Scott Russell</span></div>
-      <div class="prog-row break"><span class="prog-time-col">11u15</span><span class="prog-desc">Pauze</span></div>
-      <div class="prog-row keynote"><span class="prog-time-col">11u30</span><span class="prog-desc"><strong>Keynote 3</strong> — Simon Malfait</span></div>
+    <!-- Eric Lodewyckx -->
+    <div class="team-card">
+      <div class="team-avatar">EL</div>
+      <div class="team-name">Eric Lodewyckx</div>
+      <div class="team-role">Projectleider · PXL Zorginnovatie</div>
+      <span class="no-linkedin">Niet beschikbaar op LinkedIn</span>
     </div>
 
-    <div class="program-section-label">Middag</div>
-    <div class="program-timeline">
-      <div class="prog-row highlight"><span class="prog-time-col">12u15</span><span class="prog-desc"><strong>Opening netwerkbeurs</strong> met lunch</span></div>
+    <!-- Isabel Kortleven -->
+    <div class="team-card">
+      <div class="team-avatar">IK</div>
+      <div class="team-name">Isabel Kortleven</div>
+      <div class="team-role">Onderzoeker · PXL Zorginnovatie</div>
+      <a class="linkedin-btn" href="https://www.linkedin.com/in/isabel-kortleven-8817436/" target="_blank" rel="noopener">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
     </div>
 
-    <div class="program-section-label">Namiddag — Workshops (kies per ronde)</div>
-    <div class="program-timeline">
-      <div class="prog-row"><span class="prog-time-col">14u00</span><span class="prog-desc"><strong>Workshop ronde 1</strong></span></div>
-      <div class="prog-row"><span class="prog-time-col">14u45</span><span class="prog-desc"><strong>Workshop ronde 2</strong></span></div>
-      <div class="prog-row break"><span class="prog-time-col">15u30</span><span class="prog-desc">Pauze</span></div>
-      <div class="prog-row"><span class="prog-time-col">15u45</span><span class="prog-desc"><strong>Workshop ronde 3</strong></span></div>
+    <!-- Tom Hermans -->
+    <div class="team-card">
+      <div class="team-avatar">TH</div>
+      <div class="team-name">Tom Hermans</div>
+      <div class="team-role">Onderzoeker · PXL Zorginnovatie</div>
+      <a class="linkedin-btn" href="https://www.linkedin.com/in/tom-hermans/" target="_blank" rel="noopener">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
     </div>
-  </div>
 
-  <!-- Workshops -->
-  <div class="section-block">
-    <h2>Workshops</h2>
-    <p>Kies per ronde één workshop. Het aanbod omvat:</p>
-    <div class="workshops-grid">
-      <div class="workshop-card">🔬 <strong>THink3 × PXL</strong> — From Prototype to Practice</div>
-      <div class="workshop-card">🏗 <strong>NXTGN</strong> — AI-Ready by Design</div>
-      <div class="workshop-card">💻 <strong>Vibecoding</strong> — The New Creative OS for the AI Age</div>
-      <div class="workshop-card">📋 <strong>The Implementation Playbook</strong> for Care</div>
-      <div class="workshop-card">🏠 <strong>Zorgproeftuinen × Happy@Home</strong> — Remote Monitoring</div>
-      <div class="workshop-card">🤝 <strong>Human-Centric AI</strong> — Ethische Zorgtechnologie</div>
+    <!-- Robin Schrijvers -->
+    <div class="team-card">
+      <div class="team-avatar">RS</div>
+      <div class="team-name">Robin Schrijvers</div>
+      <div class="team-role">AI-onderzoeker · PXL Smart ICT</div>
+      <a class="linkedin-btn" href="https://www.linkedin.com/in/robin-schrijvers-498b27b8/" target="_blank" rel="noopener">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
     </div>
-  </div>
 
-  <!-- Inschrijving CTA -->
-  <div class="cta-box">
-    <span class="free-badge">Gratis deelname</span>
-    <h2>Schrijf je nu in</h2>
-    <p>Deelname is gratis. Inschrijven via het PXL-inschrijvingsplatform.</p>
-    <a href="https://ins.pxl.be/Seminar/107950514" target="_blank" rel="noopener" class="btn-primary">
-      Inschrijven
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
-  </div>
+    <!-- Joachim Gregoor -->
+    <div class="team-card">
+      <div class="team-avatar">JG</div>
+      <div class="team-name">Joachim Gregoor</div>
+      <div class="team-role">E-learning &amp; Digitale Innovatie · PXL</div>
+      <a class="linkedin-btn" href="https://be.linkedin.com/in/joachimgregoor" target="_blank" rel="noopener">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+    </div>
 
-</div>
+  </div>
+</section>
 
 <footer>
   <div class="footer-inner">
@@ -513,6 +387,7 @@
       <a href="index.html#aanpak">Onze aanpak</a>
       <a href="index.html#partners">Partners</a>
       <a href="index.html#podcast">Podcast</a>
+      <a href="team.html">Team</a>
       <a href="index.html#contact">Contact</a>
     </div>
 
@@ -534,17 +409,11 @@
 </footer>
 
 <script>
-  document.getElementById('footer-year') && (document.getElementById('footer-year').textContent = new Date().getFullYear());
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobileMenu');
-  hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('open');
-    mobileMenu.classList.toggle('open');
-  });
-  function closeMenu() {
-    hamburger.classList.remove('open');
-    mobileMenu.classList.remove('open');
-  }
+  function closeMenu() { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); }
+  hamburger.addEventListener('click', () => { hamburger.classList.toggle('open'); mobileMenu.classList.toggle('open'); });
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
