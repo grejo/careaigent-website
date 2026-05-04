@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultaten — CareAIgent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #002841;
+    --navy-dark: #001B2B;
+    --navy-mid: #003459;
+    --teal: #219ABD;
+    --teal-light: #25C7D9;
+    --teal-dark: #1A7A97;
+    --white: #FFFFFF;
+    --off-white: #F4F8FB;
+    --text-dark: #001B2B;
+    --text-mid: #3D5A6B;
+    --light-gray: #D0DDE5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--navy-dark); color: var(--white); overflow-x: hidden; }
+
+  /* NAVBAR */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(0,40,65,0.97);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(33,154,189,0.2);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 70px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .nav-logo-img { width: 40px; height: 40px; border-radius: 8px; object-fit: contain; background: #fff; padding: 4px; }
+  .nav-logo-text { font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 18px; color: #fff; letter-spacing: 0.5px; }
+  .nav-logo-text span { color: var(--teal-light); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.7); text-decoration: none; letter-spacing: 0.3px; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--teal-light); }
+  .nav-cta { background: var(--teal); color: var(--white) !important; padding: 9px 22px !important; border-radius: 6px; font-weight: 600 !important; }
+  .nav-cta:hover { background: var(--teal-light) !important; }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; background: none; border: none; }
+  .hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s; }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .mobile-menu { display: none; position: fixed; top: 70px; left: 0; right: 0; background: rgba(0,27,43,0.98); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(33,154,189,0.2); z-index: 99; padding: 16px 0 24px; flex-direction: column; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { display: block; padding: 14px 28px; font-family: 'Raleway', sans-serif; font-weight: 600; font-size: 16px; color: rgba(255,255,255,0.8); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05); transition: color 0.2s, background 0.2s; }
+  .mobile-menu a:hover { color: var(--teal-light); background: rgba(33,154,189,0.07); }
+
+  /* HERO */
+  .hero {
+    padding: 140px 48px 80px;
+    background: var(--navy);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(33,154,189,0.07) 0%, transparent 70%);
+  }
+  .hero-inner { max-width: 1200px; margin: 0 auto; position: relative; }
+  .hero-label {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--teal-light); margin-bottom: 20px;
+  }
+  .hero-label::before { content: ''; width: 24px; height: 2px; background: var(--teal); }
+  .hero h1 {
+    font-family: 'Raleway', sans-serif; font-weight: 900;
+    font-size: clamp(36px, 5vw, 64px); line-height: 1.1; letter-spacing: -2px;
+    color: #fff; margin-bottom: 20px;
+  }
+  .hero h1 em { font-style: normal; color: var(--teal-light); }
+  .hero-sub { font-size: 18px; font-weight: 300; color: rgba(255,255,255,0.7); line-height: 1.7; max-width: 600px; }
+
+  /* MAIN CONTENT */
+  .results-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 48px 120px;
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  /* TIMELINE */
+  .timeline { position: sticky; top: 90px; }
+  .timeline-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--teal-light); margin-bottom: 32px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .timeline-title::before { content: ''; width: 24px; height: 2px; background: var(--teal); }
+
+  .timeline-track { position: relative; padding-left: 28px; }
+  .timeline-track::before {
+    content: '';
+    position: absolute; left: 7px; top: 0; bottom: 0;
+    width: 2px; background: rgba(33,154,189,0.2);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+
+  .timeline-dot {
+    position: absolute; left: -28px; top: 18px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: rgba(33,154,189,0.2);
+    border: 2px solid rgba(33,154,189,0.4);
+    transition: all 0.25s;
+  }
+
+  .timeline-item.active .timeline-dot {
+    background: var(--teal);
+    border-color: var(--teal-light);
+    box-shadow: 0 0 0 4px rgba(33,154,189,0.2);
+  }
+
+  .timeline-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: all 0.25s;
+  }
+
+  .timeline-item.active .timeline-card,
+  .timeline-item:hover .timeline-card {
+    background: rgba(33,154,189,0.08);
+    border-color: rgba(33,154,189,0.3);
+  }
+
+  .timeline-date {
+    font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--teal-light); margin-bottom: 6px; display: block;
+  }
+
+  .timeline-card h3 {
+    font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 15px;
+    color: #fff; margin-bottom: 6px; line-height: 1.3;
+  }
+
+  .timeline-card p {
+    font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5;
+  }
+
+  .timeline-coming {
+    padding: 16px 0 0 0;
+    font-size: 12px; color: rgba(255,255,255,0.25); font-style: italic;
+  }
+
+  /* PDF VIEWER PANEL */
+  .pdf-panel {}
+
+  .pdf-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 24px; gap: 20px; flex-wrap: wrap;
+  }
+
+  .pdf-meta {}
+  .pdf-meta .pdf-date {
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--teal-light); margin-bottom: 8px; display: block;
+  }
+  .pdf-meta h2 {
+    font-family: 'Raleway', sans-serif; font-weight: 900;
+    font-size: clamp(20px, 3vw, 30px); color: #fff; line-height: 1.2; margin-bottom: 8px;
+  }
+  .pdf-meta p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 500px; }
+
+  .pdf-actions { display: flex; gap: 12px; flex-shrink: 0; align-items: center; }
+
+  .btn-download {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--teal); color: #fff;
+    font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 14px;
+    padding: 12px 22px; border-radius: 8px; text-decoration: none;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .btn-download:hover { background: var(--teal-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(33,154,189,0.35); }
+  .btn-download svg { width: 16px; height: 16px; }
+
+  /* Tags */
+  .pdf-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .pdf-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    background: rgba(33,154,189,0.12); border: 1px solid rgba(33,154,189,0.25);
+    color: var(--teal-light); padding: 4px 10px; border-radius: 100px;
+  }
+
+  /* Stats bar */
+  .pdf-stats {
+    display: flex; gap: 24px; margin-bottom: 24px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 16px 24px; flex-wrap: wrap;
+  }
+  .pdf-stat { text-align: center; }
+  .pdf-stat .num {
+    font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 28px;
+    color: var(--teal-light); line-height: 1; display: block;
+  }
+  .pdf-stat .lbl { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 4px; display: block; }
+
+  /* Embedded viewer */
+  .pdf-viewer-wrap {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .pdf-viewer-wrap iframe {
+    width: 100%; height: 75vh; min-height: 600px;
+    border: none; display: block;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--navy-dark);
+    border-top: 1px solid rgba(33,154,189,0.2);
+    padding: 28px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; color: rgba(255,255,255,0.3);
+  }
+  footer a { color: var(--teal-light); text-decoration: none; }
+
+  @media (max-width: 1024px) {
+    .results-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px 80px; }
+    .timeline { position: static; }
+  }
+  @media (max-width: 680px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .hero { padding: 110px 20px 60px; }
+    .results-section { padding: 40px 20px 60px; }
+    footer { flex-direction: column; gap: 8px; text-align: center; padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img class="nav-logo-img" src="https://raw.githubusercontent.com/grejo/careaigent-website/main/logo.png" onerror="this.style.display='none'" alt="CareAIgent">
+    <span class="nav-logo-text">Care<span>AI</span>gent</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#probleem">Probleem</a></li>
+    <li><a href="index.html#aanpak">Aanpak</a></li>
+    <li><a href="index.html#partners">Partners</a></li>
+    <li><a href="index.html#agenda">Agenda</a></li>
+    <li><a href="index.html#podcast">Podcast</a></li>
+    <li><a href="resultaten.html" class="active">Resultaten</a></li>
+    <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#probleem" onclick="closeMenu()">Probleem</a>
+  <a href="index.html#aanpak" onclick="closeMenu()">Aanpak</a>
+  <a href="index.html#partners" onclick="closeMenu()">Partners</a>
+  <a href="index.html#agenda" onclick="closeMenu()">Agenda</a>
+  <a href="index.html#podcast" onclick="closeMenu()">Podcast</a>
+  <a href="resultaten.html" onclick="closeMenu()">Resultaten</a>
+  <a href="index.html#contact" onclick="closeMenu()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Onderzoeksresultaten</div>
+    <h1>Wat we <em>leren</em><br>uit de praktijk</h1>
+    <p class="hero-sub">Publicaties, bevragingen en analyses uit het CareAIgent TETRA-project. Klik op een resultaat om het te bekijken of te downloaden.</p>
+  </div>
+</section>
+
+<!-- RESULTATEN -->
+<div style="background: var(--navy-dark);">
+  <div class="results-section">
+
+    <!-- TIJDLIJN -->
+    <div class="timeline">
+      <div class="timeline-title">Publicaties</div>
+      <div class="timeline-track">
+
+        <div class="timeline-item active" data-id="bevraging-beurs" onclick="selectResult(this)">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <span class="timeline-date">Januari 2026</span>
+            <h3>AI in de Vlaamse Zorgsector</h3>
+            <p>Bevraging bij 201 zorgprofessionals · Technologiebeurs</p>
+          </div>
+        </div>
+
+        <div class="timeline-coming">
+          Meer resultaten volgen in 2026 &amp; 2027 ·
+        </div>
+      </div>
+    </div>
+
+    <!-- PDF VIEWER -->
+    <div class="pdf-panel" id="pdfPanel">
+
+      <div class="pdf-header">
+        <div class="pdf-meta">
+          <span class="pdf-date">Januari 2026 · Bevraging</span>
+          <h2>AI in de Vlaamse Zorgsector</h2>
+          <p>Een bevraging bij 201 zorgprofessionals op de Technologiebeurs, januari 2026. Inzichten over adoptie, bereidheid en drempels van AI in zorg.</p>
+          <div class="pdf-tags">
+            <span class="pdf-tag">AI-adoptie</span>
+            <span class="pdf-tag">Zorgprofessionals</span>
+            <span class="pdf-tag">Vlaanderen</span>
+            <span class="pdf-tag">Technologiebeurs 2026</span>
+          </div>
+        </div>
+        <div class="pdf-actions">
+          <a class="btn-download" href="bevraging-beurs-jan2026.pdf" download="CareAIgent-bevraging-beurs-jan2026.pdf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download PDF
+          </a>
+        </div>
+      </div>
+
+      <div class="pdf-stats">
+        <div class="pdf-stat"><span class="num">201</span><span class="lbl">Respondenten</span></div>
+        <div class="pdf-stat"><span class="num">35%</span><span class="lbl">Gebruikt AI actief</span></div>
+        <div class="pdf-stat"><span class="num">88%</span><span class="lbl">Wil AI gebruiken</span></div>
+        <div class="pdf-stat"><span class="num">65%</span><span class="lbl">Ziet hoog potentieel</span></div>
+        <div class="pdf-stat"><span class="num">12</span><span class="lbl">Bevindingen</span></div>
+      </div>
+
+      <div class="pdf-viewer-wrap">
+        <iframe src="bevraging-beurs-jan2026.pdf#toolbar=1&navpanes=0" title="AI in de Vlaamse Zorgsector — CareAIgent"></iframe>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span>© <span id="footer-year"></span> Hogeschool PXL — CareAIgent</span>
+  <span>Een <a href="https://www.vlaio.be" target="_blank" rel="noopener">VLAIO</a> TETRA-project · PXL Zorginnovatie</span>
+</footer>
+
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+
+  function closeMenu() {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+  }
+
+  function selectResult(el) {
+    document.querySelectorAll('.timeline-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>
