@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Onderzoeksresultaten AI in de Vlaamse Zorg — CareAIgent</title>
-<meta name="description" content="Bekijk de onderzoeksresultaten van CareAIgent. Eerste bevindingen over AI-gebruik en -behoeften in de Vlaamse zorgsector, gepresenteerd op de beurs van januari 2026.">
+<meta name="description" content="Bekijk de CareAIgent-onderzoeksresultaten: 201 zorgprofessionals over AI in de zorg. 88% wil AI gebruiken, 65% ziet hoog potentieel. Download het rapport met 12 bevindingen over zorginnovatie in Vlaanderen.">
 <meta name="keywords" content="AI resultaten zorgsector, onderzoek AI zorg Vlaanderen, CareAIgent bevindingen, AI behoeften zorgprofessionals">
 <meta name="author" content="CareAIgent — PXL Zorginnovatie">
 <meta name="robots" content="index, follow">
@@ -130,13 +130,9 @@
 
   /* MAIN CONTENT */
   .results-section {
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 80px 48px 120px;
-    display: grid;
-    grid-template-columns: 340px 1fr;
-    gap: 60px;
-    align-items: start;
   }
 
   /* TIMELINE */
@@ -208,24 +204,86 @@
     font-size: 12px; color: rgba(255,255,255,0.25); font-style: italic;
   }
 
-  /* PDF VIEWER PANEL */
-  .pdf-panel {}
-
-  .pdf-header {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    margin-bottom: 24px; gap: 20px; flex-wrap: wrap;
+  /* MODAL */
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,10,20,0.88); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center; padding: 20px;
   }
-
-  .pdf-meta {}
-  .pdf-meta .pdf-date {
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--navy); border: 1px solid rgba(33,154,189,0.25);
+    border-radius: 20px; width: 100%; max-width: 960px;
+    max-height: 90vh; overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  }
+  .modal-header {
+    padding: 28px 36px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;
+    flex-shrink: 0;
+  }
+  .modal-meta .pdf-date {
     font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
     color: var(--teal-light); margin-bottom: 8px; display: block;
   }
-  .pdf-meta h2 {
+  .modal-meta h2 {
     font-family: 'Raleway', sans-serif; font-weight: 900;
-    font-size: clamp(20px, 3vw, 30px); color: #fff; line-height: 1.2; margin-bottom: 8px;
+    font-size: clamp(18px, 2.5vw, 26px); color: #fff; line-height: 1.2; margin-bottom: 8px;
   }
-  .pdf-meta p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 500px; }
+  .modal-meta p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 560px; }
+  .modal-header-actions { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
+  .modal-close {
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 50%; width: 36px; height: 36px; cursor: pointer; color: #fff;
+    font-size: 16px; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s; flex-shrink: 0;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.18); }
+  .modal-body { padding: 24px 36px 36px; overflow-y: auto; }
+  .btn-linkedin {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #0A66C2; color: #fff;
+    font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 14px;
+    padding: 12px 20px; border-radius: 8px; text-decoration: none;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .btn-linkedin:hover { background: #0856a8; transform: translateY(-1px); }
+  .btn-linkedin svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* Klik-hint op tijdslijn-items */
+  .timeline-hint {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: var(--teal-light); margin-top: 8px;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .timeline-item:hover .timeline-hint { opacity: 1; }
+
+  /* Gallery */
+  .gallery-main {
+    position: relative; background: rgba(0,0,0,0.3); border-radius: 12px;
+    overflow: hidden; margin-bottom: 12px; aspect-ratio: 16/10;
+  }
+  .gallery-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gallery-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%; width: 44px; height: 44px; cursor: pointer; color: #fff;
+    font-size: 20px; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s; backdrop-filter: blur(4px);
+  }
+  .gallery-arrow:hover { background: rgba(33,154,189,0.5); }
+  .gallery-arrow.prev { left: 12px; }
+  .gallery-arrow.next { right: 12px; }
+  .gallery-caption { font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 8px; text-align: center; min-height: 20px; }
+  .gallery-thumbs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .gallery-thumb {
+    width: 80px; height: 56px; border-radius: 6px; overflow: hidden;
+    cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; flex-shrink: 0;
+  }
+  .gallery-thumb.active { border-color: var(--teal-light); }
+  .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   .pdf-actions { display: flex; gap: 12px; flex-shrink: 0; align-items: center; }
 
@@ -391,7 +449,7 @@
   /* ===== END FOOTER ===== */
 
   @media (max-width: 1024px) {
-    .results-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px 80px; }
+    .results-section { padding: 60px 24px 80px; }
     .timeline { position: static; }
   }
   @media (max-width: 680px) {
@@ -442,7 +500,7 @@
   <div class="hero-inner">
     <div class="hero-label">Onderzoeksresultaten</div>
     <h1>Wat we <em>leren</em><br>uit de praktijk</h1>
-    <p class="hero-sub">Publicaties, bevragingen en analyses uit het CareAIgent TETRA-project. Klik op een resultaat om het te bekijken of te downloaden.</p>
+    <p class="hero-sub">Publicaties, bevragingen en analyses over AI in de zorg — uit het CareAIgent VLAIO TETRA-project. Klik op een resultaat om het te bekijken of te downloaden.</p>
   </div>
 </section>
 
@@ -455,12 +513,29 @@
       <div class="timeline-title">Publicaties</div>
       <div class="timeline-track">
 
-        <div class="timeline-item active" data-id="bevraging-beurs" onclick="selectResult(this)">
+        <div class="timeline-item" data-id="bevraging-beurs" onclick="openModal(this)">
           <div class="timeline-dot"></div>
           <div class="timeline-card">
             <span class="timeline-date">Januari 2026</span>
             <h3>AI in de Vlaamse Zorgsector</h3>
             <p>Bevraging bij 201 zorgprofessionals · Technologiebeurs</p>
+            <span class="timeline-hint">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Klik voor meer info
+            </span>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-id="studiedag-mei" onclick="openModal(this)">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <span class="timeline-date">Mei 2026</span>
+            <h3>Studiedag AI en technologie in de zorg</h3>
+            <p>80+ deelnemers · Bluepoint Antwerpen · 12 mei 2026</p>
+            <span class="timeline-hint">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Klik voor meer info
+            </span>
           </div>
         </div>
 
@@ -470,48 +545,41 @@
       </div>
     </div>
 
-    <!-- PDF VIEWER -->
-    <div class="pdf-panel" id="pdfPanel">
-
-      <div class="pdf-header">
-        <div class="pdf-meta">
-          <span class="pdf-date">Januari 2026 · Bevraging</span>
-          <h2>AI in de Vlaamse Zorgsector</h2>
-          <p>Een bevraging bij 201 zorgprofessionals op de Technologiebeurs, januari 2026. Inzichten over adoptie, bereidheid en drempels van AI in zorg.</p>
-          <div class="pdf-tags">
-            <span class="pdf-tag">AI-adoptie</span>
-            <span class="pdf-tag">Zorgprofessionals</span>
-            <span class="pdf-tag">Vlaanderen</span>
-            <span class="pdf-tag">Technologiebeurs 2026</span>
-          </div>
-        </div>
-        <div class="pdf-actions">
-          <a class="btn-download" href="bevraging-beurs-jan2026.pdf" download="CareAIgent-bevraging-beurs-jan2026.pdf">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            Download PDF
-          </a>
-        </div>
-      </div>
-
-      <div class="pdf-stats">
-        <div class="pdf-stat"><span class="num">201</span><span class="lbl">Respondenten</span></div>
-        <div class="pdf-stat"><span class="num">35%</span><span class="lbl">Gebruikt AI actief</span></div>
-        <div class="pdf-stat"><span class="num">88%</span><span class="lbl">Wil AI gebruiken</span></div>
-        <div class="pdf-stat"><span class="num">65%</span><span class="lbl">Ziet hoog potentieel</span></div>
-        <div class="pdf-stat"><span class="num">12</span><span class="lbl">Bevindingen</span></div>
-      </div>
-
-      <div class="pdf-viewer-wrap">
-        <iframe src="bevraging-beurs-jan2026.pdf#toolbar=1&navpanes=0" title="AI in de Vlaamse Zorgsector — CareAIgent"></iframe>
-      </div>
-
-    </div>
   </div>
 </div>
+
+<!-- Tekstsamenvatting bevindingen — crawlbaar voor zoekmachines -->
+<section style="background:var(--navy); padding:64px 48px 80px;">
+  <div style="max-width:800px; margin:0 auto;">
+    <div style="font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--teal-light); margin-bottom:16px; display:flex; align-items:center; gap:10px;">
+      <span style="display:inline-block; width:24px; height:2px; background:var(--teal);"></span>
+      Samenvatting bevindingen
+    </div>
+    <h2 style="font-family:'Raleway',sans-serif; font-weight:900; font-size:clamp(24px,3vw,36px); color:#fff; margin-bottom:24px; line-height:1.2;">AI in de Vlaamse zorgsector: wat leren 201 zorgprofessionals ons?</h2>
+    <p style="font-size:16px; color:rgba(255,255,255,0.7); line-height:1.8; margin-bottom:20px;">In januari 2026 voerde CareAIgent een grootschalige bevraging uit op de Technologiebeurs in Hasselt. In totaal namen 201 zorgprofessionals deel — verpleegkundigen, artsen, zorgcoördinatoren en beleidsmakers uit ziekenhuizen, thuiszorgorganisaties en woonzorgcentra in Vlaanderen.</p>
+    <p style="font-size:16px; color:rgba(255,255,255,0.7); line-height:1.8; margin-bottom:32px;">De bevraging peilde naar het huidige gebruik van AI in de zorg, de bereidheid om AI in te zetten, en de drempels die zorgprofessionals ervaren bij <strong>het automatiseren van zorgadministratie</strong> via AI-oplossingen.</p>
+    <h3 style="font-family:'Raleway',sans-serif; font-weight:700; font-size:20px; color:#fff; margin-bottom:20px;">Belangrijkste bevindingen</h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:16px; margin-bottom:32px;">
+      <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(33,154,189,0.15); border-radius:12px; padding:20px 24px;">
+        <div style="font-family:'Raleway',sans-serif; font-weight:900; font-size:28px; color:var(--teal-light); margin-bottom:6px;">88%</div>
+        <p style="font-size:14px; color:rgba(255,255,255,0.7); line-height:1.6;">van de bevraagde zorgprofessionals wil AI actief inzetten in hun dagelijkse praktijk. De bereidheid is groot — maar de stap naar implementatie wordt nog zelden gezet.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(33,154,189,0.15); border-radius:12px; padding:20px 24px;">
+        <div style="font-family:'Raleway',sans-serif; font-weight:900; font-size:28px; color:var(--teal-light); margin-bottom:6px;">65%</div>
+        <p style="font-size:14px; color:rgba(255,255,255,0.7); line-height:1.6;">ziet een hoog potentieel voor AI-oplossingen in de zorg — met name voor automatische verslaggeving, dossierverwerking en planningsondersteuning.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(33,154,189,0.15); border-radius:12px; padding:20px 24px;">
+        <div style="font-family:'Raleway',sans-serif; font-weight:900; font-size:28px; color:var(--teal-light); margin-bottom:6px;">35%</div>
+        <p style="font-size:14px; color:rgba(255,255,255,0.7); line-height:1.6;">gebruikt AI vandaag al actief op de werkvloer. Het potentieel van <strong>AI in de zorg</strong> is dus grotendeels onbenut — een belangrijke vaststelling voor zorginnovatie in Vlaanderen.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(33,154,189,0.15); border-radius:12px; padding:20px 24px;">
+        <div style="font-family:'Raleway',sans-serif; font-weight:900; font-size:28px; color:var(--teal-light); margin-bottom:6px;">201</div>
+        <p style="font-size:14px; color:rgba(255,255,255,0.7); line-height:1.6;">zorgprofessionals namen deel aan de bevraging, waaruit 12 concrete bevindingen voortkwamen over AI-adoptie, drempels en behoeften in de Vlaamse zorgsector.</p>
+      </div>
+    </div>
+    <p style="font-size:15px; color:rgba(255,255,255,0.55); line-height:1.7;">De grootste drempels voor het gebruik van AI in ziekenhuizen en zorgorganisaties zijn: gebrek aan kennis over beschikbare tools, onvoldoende vertrouwen in AI-systemen, en een tekort aan begeleiding bij implementatie. CareAIgent werkt via co-creatietrajecten aan oplossingen voor elk van deze drempels — samen met zorgprofessionals, technologiebedrijven en beleidsmakers.</p>
+  </div>
+</section>
 
 <footer>
   <div class="footer-inner">
@@ -561,12 +629,54 @@
   </div>
 </footer>
 
+<!-- MODAL -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-meta">
+        <span class="pdf-date" id="modal-date"></span>
+        <h2 id="modal-title"></h2>
+        <p id="modal-desc"></p>
+        <div class="pdf-tags" id="modal-tags"></div>
+      </div>
+      <div class="modal-header-actions">
+        <a class="btn-download" id="modal-download" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF
+        </a>
+        <a class="btn-linkedin" id="modal-linkedin" style="display:none" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+        <button class="modal-close" id="modal-close-btn" aria-label="Sluiten">&#x2715;</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div id="modal-pdf-section" style="display:none">
+        <div class="pdf-stats" id="modal-stats"></div>
+        <div class="pdf-viewer-wrap">
+          <iframe id="modal-iframe" title="Document" style="width:100%;height:72vh;min-height:500px;border:none;display:block;"></iframe>
+        </div>
+      </div>
+      <div id="modal-photo-section" style="display:none">
+        <div class="gallery-main">
+          <img id="gallery-img" src="" alt="">
+          <button class="gallery-arrow prev" id="gallery-prev">&#8592;</button>
+          <button class="gallery-arrow next" id="gallery-next">&#8594;</button>
+        </div>
+        <p class="gallery-caption" id="gallery-caption"></p>
+        <div class="gallery-thumbs" id="gallery-thumbs"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   document.getElementById('footer-year').textContent = new Date().getFullYear();
 
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobileMenu');
-  hamburger.addEventListener('click', () => {
+  hamburger.addEventListener('click', function() {
     hamburger.classList.toggle('open');
     mobileMenu.classList.toggle('open');
   });
@@ -576,10 +686,168 @@
     mobileMenu.classList.remove('open');
   }
 
-  function selectResult(el) {
-    document.querySelectorAll('.timeline-item').forEach(i => i.classList.remove('active'));
-    el.classList.add('active');
+  const resultData = {
+    'bevraging-beurs': {
+      type: 'pdf',
+      date: 'Januari 2026 · Bevraging',
+      title: 'AI in de Vlaamse Zorgsector',
+      desc: 'Een bevraging bij 201 zorgprofessionals op de Technologiebeurs, januari 2026. Inzichten over adoptie, bereidheid en drempels van AI in zorg.',
+      tags: ['AI-adoptie', 'Zorgprofessionals', 'Vlaanderen', 'Technologiebeurs 2026'],
+      pdf: 'bevraging-beurs-jan2026.pdf',
+      download: 'CareAIgent-bevraging-beurs-jan2026.pdf',
+      stats: [
+        {num: '201', lbl: 'Respondenten'},
+        {num: '35%', lbl: 'Gebruikt AI actief'},
+        {num: '88%', lbl: 'Wil AI gebruiken'},
+        {num: '65%', lbl: 'Ziet hoog potentieel'},
+        {num: '12', lbl: 'Bevindingen'}
+      ]
+    },
+    'studiedag-mei': {
+      type: 'photos',
+      date: 'Mei 2026 · Studiedag',
+      title: 'AI en technologie in de zorg',
+      desc: 'Op 12 mei brachten CareAIgent en Zorgproeftuinen meer dan 80 zorgprofessionals, ontwikkelaars, beleidsmakers en onderzoekers samen in Bluepoint Antwerpen. Met keynotes van Dado Van Petegem, Simon Malfait en Scott Russell (Innatify).',
+      tags: ['Studiedag', 'Bluepoint Antwerpen', '80+ deelnemers', '12 mei 2026'],
+      linkedin: 'https://www.linkedin.com/feed/update/urn:li:activity:7460318196378697728',
+      photos: [
+        {src: '/images/studiedag-001.jpg', caption: 'Publiek tijdens de studiedag'},
+        {src: '/images/studiedag-002.jpg', caption: 'Opening door de presentator'},
+        {src: '/images/studiedag-003.jpg', caption: 'Introductiesessie in Bluepoint Antwerpen'},
+        {src: '/images/studiedag-004.jpg', caption: 'Deelnemers tijdens de sessies'}
+      ]
+    }
+  };
+
+  let currentPhotoIndex = 0;
+  let currentPhotos = [];
+
+  function setTags(container, tags) {
+    container.textContent = '';
+    tags.forEach(function(tag) {
+      const span = document.createElement('span');
+      span.className = 'pdf-tag';
+      span.textContent = tag;
+      container.appendChild(span);
+    });
   }
+
+  function setStats(container, stats) {
+    container.textContent = '';
+    stats.forEach(function(s) {
+      const div = document.createElement('div');
+      div.className = 'pdf-stat';
+      const numSpan = document.createElement('span');
+      numSpan.className = 'num';
+      numSpan.textContent = s.num;
+      const lblSpan = document.createElement('span');
+      lblSpan.className = 'lbl';
+      lblSpan.textContent = s.lbl;
+      div.appendChild(numSpan);
+      div.appendChild(lblSpan);
+      container.appendChild(div);
+    });
+  }
+
+  function buildThumbs(photos) {
+    const container = document.getElementById('gallery-thumbs');
+    container.textContent = '';
+    photos.forEach(function(p, i) {
+      const div = document.createElement('div');
+      div.className = 'gallery-thumb' + (i === 0 ? ' active' : '');
+      div.addEventListener('click', (function(idx) { return function() { showPhoto(idx); }; })(i));
+      const img = document.createElement('img');
+      img.src = p.src;
+      img.alt = p.caption || '';
+      div.appendChild(img);
+      container.appendChild(div);
+    });
+  }
+
+  function showPhoto(index) {
+    if (!currentPhotos.length) return;
+    currentPhotoIndex = (index + currentPhotos.length) % currentPhotos.length;
+    const p = currentPhotos[currentPhotoIndex];
+    const galleryImg = document.getElementById('gallery-img');
+    galleryImg.src = p.src;
+    galleryImg.alt = p.caption || '';
+    document.getElementById('gallery-caption').textContent = p.caption || '';
+    document.querySelectorAll('.gallery-thumb').forEach(function(t, i) {
+      t.classList.toggle('active', i === currentPhotoIndex);
+    });
+  }
+
+  function openModal(el) {
+    const id = el.dataset.id;
+    const data = resultData[id];
+    if (!data) return;
+
+    document.getElementById('modal-date').textContent = data.date;
+    document.getElementById('modal-title').textContent = data.title;
+    document.getElementById('modal-desc').textContent = data.desc;
+    setTags(document.getElementById('modal-tags'), data.tags || []);
+
+    const pdfSection = document.getElementById('modal-pdf-section');
+    const photoSection = document.getElementById('modal-photo-section');
+    const downloadBtn = document.getElementById('modal-download');
+    const linkedinBtn = document.getElementById('modal-linkedin');
+
+    linkedinBtn.style.display = 'none';
+    downloadBtn.style.display = 'none';
+
+    if (data.type === 'pdf') {
+      pdfSection.style.display = 'block';
+      photoSection.style.display = 'none';
+      downloadBtn.style.display = 'inline-flex';
+      downloadBtn.href = data.pdf;
+      downloadBtn.setAttribute('download', data.download);
+      setStats(document.getElementById('modal-stats'), data.stats);
+      document.getElementById('modal-iframe').src = data.pdf + '#toolbar=1&navpanes=0';
+    } else if (data.type === 'photos') {
+      pdfSection.style.display = 'none';
+      photoSection.style.display = 'block';
+      currentPhotos = data.photos || [];
+      currentPhotoIndex = 0;
+      buildThumbs(currentPhotos);
+      showPhoto(0);
+    }
+
+    if (data.linkedin) {
+      linkedinBtn.style.display = 'inline-flex';
+      linkedinBtn.href = data.linkedin;
+    }
+
+    document.getElementById('modal-backdrop').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal-backdrop').classList.remove('open');
+    document.body.style.overflow = '';
+    document.getElementById('modal-iframe').src = '';
+  }
+
+  document.getElementById('modal-backdrop').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+  document.getElementById('gallery-prev').addEventListener('click', function() { showPhoto(currentPhotoIndex - 1); });
+  document.getElementById('gallery-next').addEventListener('click', function() { showPhoto(currentPhotoIndex + 1); });
+
+  window.addEventListener('load', function() {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && resultData[hash]) {
+      const el = document.querySelector('[data-id="' + hash + '"]');
+      if (el) openModal(el);
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (!document.getElementById('modal-backdrop').classList.contains('open')) return;
+    if (e.key === 'Escape') closeModal();
+    if (e.key === 'ArrowRight') showPhoto(currentPhotoIndex + 1);
+    if (e.key === 'ArrowLeft') showPhoto(currentPhotoIndex - 1);
+  });
 </script>
 </body>
 </html>
