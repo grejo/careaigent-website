@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Activity {
+  id                   String         @id @default(cuid())
+  slug                 String         @unique
+  title                String
+  description          String?
+  dateStart            DateTime
+  dateEnd              DateTime?
+  location             String?
+  maxParticipants      Int?
+  registrationDeadline DateTime?
+  isOpen               Boolean        @default(true)
+  extraFields          Json           @default("[]")
+  createdAt            DateTime       @default(now())
+  registrations        Registration[]
+}
+
+model Registration {
+  id         String   @id @default(cuid())
+  activityId String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  naam       String
+  voornaam   String
+  email      String
+  telefoon   String
+  instelling String
+  functie    String
+  extraData  Json     @default("{}")
+  createdAt  DateTime @default(now())
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
