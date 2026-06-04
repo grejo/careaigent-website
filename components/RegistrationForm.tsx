@@ -135,6 +135,17 @@ export default function RegistrationForm({ activitySlug, extraFields }: Props) {
               {opt}
             </label>
           ))}
+          {field.type === 'checkbox' && field.options?.map((opt) => (
+            <label key={opt} className="radio-label" htmlFor={`${field.key}-${opt}`}>
+              <input
+                type="checkbox"
+                id={`${field.key}-${opt}`}
+                name={field.key}
+                value={opt}
+              />
+              {opt}
+            </label>
+          ))}
         </div>
       ))}
 
