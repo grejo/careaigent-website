@@ -1358,7 +1358,7 @@ footer {
   box-shadow: 0 4px 24px rgba(0,40,65,0.1);
   overflow: hidden;
   position: sticky;
-  top: 100px;
+  top: 88px;
 }
 .activity-form-card-header {
   background: var(--navy);
@@ -1378,12 +1378,18 @@ footer {
 .activity-form-card-body .registration-form {
   margin-top: 0;
 }
+.activity-closed-card {
+  background: #fff8f0;
+}
 .activity-closed-card .activity-form-card-header {
   background: #fbe9d7;
   border-top: 4px solid #e65100;
 }
 .activity-closed-card .activity-form-card-header h2 {
   color: #b84f00;
+}
+.activity-closed-card .activity-form-card-body {
+  color: var(--text-dark);
 }
 
 /* ===== Admin ===== */
@@ -1865,6 +1871,10 @@ footer {
   .hero-visual { display: none; }
   .approach-grid, .practical-grid, .contact-grid { grid-template-columns: 1fr; }
   .problem-grid, .who-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 900px) {
+  .activity-content-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
