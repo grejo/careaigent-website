@@ -49,20 +49,25 @@ export async function POST(req: Request) {
   }
 
   // Save registration
-  const registration = await prisma.registration.create({
-    data: {
-      activityId: activity.id,
-      naam: parsed.data.naam,
-      voornaam: parsed.data.voornaam,
-      email: parsed.data.email,
-      telefoon: parsed.data.telefoon,
-      instelling: parsed.data.instelling,
-      functie: parsed.data.functie,
-      extraData: parsed.data.extraData,
-    },
-  });
+  let registration;
+  try {
+    registration = await prisma.registration.create({
+      data: {
+        activityId: activity.id,
+        naam: parsed.data.naam,
+        voornaam: parsed.data.voornaam,
+        email: parsed.data.email,
+        telefoon: parsed.data.telefoon,
+        instelling: parsed.data.instelling,
+        functie: parsed.data.functie,
+        extraData: parsed.data.extraData,
+      },
+    });
+  } catch (err) {
+    console.error('Registration create error:', err);
+    return NextResponse.json({ error: 'Kon inschrijving niet opslaan. Probeer opnieuw.' }, { status: 500 });
+  }
 
-  // Send confirmation email (don't block on failures)
   sendConfirmationEmail(registration, activity).catch((err) => {
     console.error('Confirmation email failed:', err);
   });
