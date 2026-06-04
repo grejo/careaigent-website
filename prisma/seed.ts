@@ -1,7 +1,14 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { hash } from 'bcryptjs';
+import { config } from 'dotenv';
 
-const prisma = new PrismaClient();
+// Load .env.local for local development
+config({ path: '.env.local', override: false });
+
+const prisma = new PrismaClient({
+  adapter: new PrismaPg(process.env.DATABASE_URL!),
+});
 
 async function main() {
   const email = process.env.ADMIN_EMAIL;
