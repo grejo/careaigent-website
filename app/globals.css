@@ -1271,9 +1271,7 @@ footer {
 .activity-date { color: var(--teal); font-weight: 600; margin-bottom: 8px; }
 .activity-title { font-size: 1.2rem; color: var(--navy); margin-bottom: 12px; }
 .activity-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
-.activity-detail-section { padding: 80px 20px; max-width: 720px; margin: 0 auto; }
 .registration-form { margin-top: 40px; }
-.registration-closed { background: #fff3e0; border-radius: 8px; padding: 20px; margin-top: 20px; }
 
 /* Activity detail page — redesign */
 .activity-hero {
@@ -1876,10 +1874,6 @@ footer {
   .problem-grid, .who-grid { grid-template-columns: 1fr 1fr; }
 }
 
-@media (max-width: 900px) {
-  .activity-content-grid { grid-template-columns: 1fr; }
-}
-
 @media (max-width: 768px) {
   .agenda-card-header {
     grid-template-columns: auto 1fr;
@@ -1910,11 +1904,9 @@ footer {
 }
 
 @media (max-width: 900px) {
+  .activity-content-grid { grid-template-columns: 1fr; }
   .results-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px 80px; }
   .timeline { position: static; }
-}
-
-@media (max-width: 900px) {
   /* team grid: 2 cols on medium */
   .team-grid-inner { grid-template-columns: repeat(2, 1fr) !important; }
 }
