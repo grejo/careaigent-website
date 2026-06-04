@@ -45,9 +45,7 @@ export default function BedanktPage() {
         >
           Bedankt voor uw bericht. Het CareAIgent-team neemt zo snel mogelijk contact met u op.
         </p>
-        <Link href="/" className="btn-primary">
-          ← Terug naar de website
-        </Link>
+        <Link href="/agenda" className="btn-primary">← Terug naar agenda</Link>
       </div>
     </section>
   );
