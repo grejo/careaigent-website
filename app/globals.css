@@ -12,6 +12,7 @@
   --light-gray: #D0DDE5;
   --text-dark: #001B2B;
   --text-mid: #3D5A6B;
+  --light-bg: #F4F8FB;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }

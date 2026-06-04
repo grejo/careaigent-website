@@ -37,6 +37,7 @@ export default function Nav() {
         <button
           className={`hamburger${menuOpen ? ' open' : ''}`}
           aria-label="Menu openen"
+          aria-expanded={menuOpen}
           onClick={() => setMenuOpen((v) => !v)}
         >
           <span></span>
