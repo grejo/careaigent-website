@@ -91,7 +91,7 @@ export default function HomePage() {
             </a>
           </div>
           <div className="vlaio-badge">
-            <strong>VLAIO</strong> TETRA-project · 2024–2026 · Hogeschool PXL
+            <strong>VLAIO</strong> TETRA-project · 2025–2027 · Hogeschool PXL
           </div>
         </div>
 
@@ -99,7 +99,7 @@ export default function HomePage() {
           <div style={{ textAlign: 'center', marginBottom: '20px' }}>
             <img
               src="/images/index-002.jpg"
-              alt="CareAIgent"
+              alt="CareAIgent onderzoeksproject — AI-oplossingen voor minder administratie in de zorg"
               style={{
                 width: '140px',
                 height: '140px',
@@ -109,29 +109,39 @@ export default function HomePage() {
               }}
             />
           </div>
-          <div className="float-card">
-            <div className="float-card-label">Tijdsbesparing</div>
-            <div className="float-card-title">AI-gestuurde rapportage</div>
+          <a className="float-card" href="/resultaten#bevraging-beurs">
+            <div className="float-card-label">Bevraging 2026 · 201 zorgprofessionals</div>
+            <div className="float-card-title">88% wil AI inzetten</div>
             <div className="float-card-text">
-              Automatische verwerking van zorgverslagen via spraakherkenning
+              De grote meerderheid van zorgprofessionals wil AI actief gebruiken in hun dagelijkse praktijk
             </div>
             <div className="float-card-stat">
-              <div className="stat-number">40%</div>
-              <div className="stat-label">minder rapportagetijd</div>
+              <div className="stat-number">88%</div>
+              <div className="stat-label">wil AI gebruiken</div>
             </div>
-          </div>
-          <div className="float-card">
-            <div className="float-card-label">Co-creatie</div>
-            <div className="float-card-title">Technologiebeurs 2025</div>
+          </a>
+          <a className="float-card" href="/resultaten#bevraging-beurs">
+            <div className="float-card-label">Bevraging 2026 · 201 zorgprofessionals</div>
+            <div className="float-card-title">65% ziet hoog potentieel</div>
             <div className="float-card-text">
-              Zorginstellingen &amp; techbedrijven ontmoeten elkaar
+              Twee op drie zorgprofessionals gelooft dat AI een grote rol kan spelen in hun werk
             </div>
-          </div>
-          <div className="float-card">
-            <div className="float-card-label">Partners</div>
-            <div className="float-card-title">Groeiend netwerk</div>
-            <div className="float-card-text">Jessa Ziekenhuis · AZ Oostende · Gele Kruis</div>
-          </div>
+            <div className="float-card-stat">
+              <div className="stat-number">65%</div>
+              <div className="stat-label">ziet hoog potentieel</div>
+            </div>
+          </a>
+          <a className="float-card" href="/resultaten#bevraging-beurs">
+            <div className="float-card-label">Bevraging 2026 · 201 zorgprofessionals</div>
+            <div className="float-card-title">Slechts 35% gebruikt AI vandaag</div>
+            <div className="float-card-text">
+              Het potentieel is grotendeels onbenut — kennis en implementatieondersteuning ontbreken
+            </div>
+            <div className="float-card-stat">
+              <div className="stat-number">35%</div>
+              <div className="stat-label">gebruikt AI actief</div>
+            </div>
+          </a>
         </div>
       </section>
 
@@ -238,7 +248,7 @@ export default function HomePage() {
                 <div className="num-label">
                   jaar onderzoek
                   <br />
-                  2024–2026
+                  2025–2027
                 </div>
               </div>
               <div className="approach-stat">
@@ -267,6 +277,22 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Missie & Visie — SEO tekstblok */}
+        <div style={{ maxWidth: '760px', margin: '64px auto 0', paddingTop: '48px', borderTop: '1px solid rgba(33,154,189,0.15)' }}>
+          <h2 style={{ fontFamily: "'Raleway',sans-serif", fontWeight: 900, fontSize: 'clamp(22px,3vw,32px)', color: '#fff', marginBottom: '20px', lineHeight: 1.2 }}>
+            Onze missie: AI in de zorg concreet en bruikbaar maken
+          </h2>
+          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.7)', lineHeight: 1.8, marginBottom: '16px' }}>
+            CareAIgent gelooft dat <strong>AI in de zorg</strong> een fundamentele rol kan spelen in het verlichten van administratieve lasten — maar enkel als het op een mensgerichte, praktijkgerichte manier wordt ingezet. Zorgprofessionals verdienen tools die écht werken in hun dagelijkse context.
+          </p>
+          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.7)', lineHeight: 1.8, marginBottom: '16px' }}>
+            Via <strong>PXL Zorginnovatie in Vlaanderen</strong> willen we de kloof overbruggen tussen de beschikbare AI-technologie en de concrete noden van zorgverleners. Denk aan automatische spraakherkenning voor verslaggeving, slimme planningssystemen en AI-gestuurde dossierverwerking — oplossingen die <strong>administratieve lasten in de zorg verlagen</strong> zonder de menselijke factor te verliezen.
+          </p>
+          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.7)', lineHeight: 1.8 }}>
+            Ons VLAIO TETRA-project loopt van 2025 tot 2027 en brengt zorginstellingen en technologiebedrijven samen in co-creatietrajecten. Zo zorgen we ervoor dat <strong>AI-oplossingen voor ziekenhuizen en zorgorganisaties</strong> niet in een lab worden ontwikkeld, maar samen met de mensen die ze dagelijks zullen gebruiken.
+          </p>
         </div>
       </section>
 
@@ -376,8 +402,8 @@ export default function HomePage() {
                 </span>
               </div>
             </div>
-            <Link href="/agenda" className="agenda-cta-btn">
-              Meer info
+            <Link href="/resultaten#studiedag-mei" className="agenda-cta-btn">
+              Bekijk resultaten
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>

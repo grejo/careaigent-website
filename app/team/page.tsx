@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     'Maak kennis met het CareAIgent-team van PXL Zorginnovatie: de onderzoekers en experten die werken aan AI-oplossingen voor de Vlaamse zorgsector.',
   keywords:
-    'CareAIgent team, PXL Zorginnovatie onderzoekers, AI zorg team, Eric Lodewyckx, Isabel Kortleven, Tom Hermans, Robin Schrijvers, Joachim Gregoor',
+    'CareAIgent team, PXL Zorginnovatie onderzoekers, AI zorg team, Eric Lodewyckx, Isabel Kortleven, Tom Hermans, Robin Schrijvers, Lotte Smeets, Joachim Gregoor',
   openGraph: {
     type: 'website',
     url: 'https://careaigent.be/team',
@@ -92,6 +92,14 @@ export default function TeamPage() {
             <div className="team-name">Robin Schrijvers</div>
             <div className="team-role">AI-onderzoeker · PXL Smart ICT</div>
             <LinkedInButton href="https://www.linkedin.com/in/robin-schrijvers-498b27b8/" />
+          </div>
+
+          {/* Lotte Smeets */}
+          <div className="team-card">
+            <div className="team-avatar">LS</div>
+            <div className="team-name">Lotte Smeets</div>
+            <div className="team-role">Onderzoeker · PXL Zorginnovatie</div>
+            <LinkedInButton href="https://www.linkedin.com/in/lotte-smeets-409317185/" />
           </div>
 
           {/* Joachim Gregoor */}
