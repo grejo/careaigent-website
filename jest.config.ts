@@ -8,7 +8,8 @@ const config: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
-  testMatch: ['**/*.test.ts'],
+  // Component tests should add `@jest-environment jsdom` docblock to override
+  testMatch: ['**/*.test.ts', '**/*.test.tsx'],
 };
 
 export default config;
