@@ -15,10 +15,14 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 async function getActivities() {
-  return prisma.activity.findMany({
-    orderBy: { dateStart: 'asc' },
-    include: { _count: { select: { registrations: true } } },
-  });
+  try {
+    return await prisma.activity.findMany({
+      orderBy: { dateStart: 'asc' },
+      include: { _count: { select: { registrations: true } } },
+    });
+  } catch {
+    return [];
+  }
 }
 
 export default async function AgendaPage() {

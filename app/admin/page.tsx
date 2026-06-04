@@ -5,8 +5,8 @@ export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
   const [activityCount, registrationCount] = await Promise.all([
-    prisma.activity.count(),
-    prisma.registration.count(),
+    prisma.activity.count().catch(() => 0),
+    prisma.registration.count().catch(() => 0),
   ]);
 
   return (
