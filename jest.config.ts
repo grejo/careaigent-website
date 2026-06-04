@@ -7,6 +7,7 @@ const config: Config = {
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
+    '^ical-generator$': '<rootDir>/node_modules/ical-generator/dist/index.cjs',
   },
   // Component tests should add `@jest-environment jsdom` docblock to override
   testMatch: ['**/*.test.ts', '**/*.test.tsx'],
