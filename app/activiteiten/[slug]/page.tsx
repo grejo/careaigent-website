@@ -45,50 +45,97 @@ export default async function ActivityPage({ params }: Props) {
     required: boolean;
   }>;
 
+  const timeStr = activity.dateStart.toLocaleTimeString('nl-BE', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  const spotsLeft =
+    activity.maxParticipants !== null
+      ? activity.maxParticipants - activity._count.registrations
+      : null;
+
   return (
-    <section className="activity-detail-section">
-      <div style={{ marginBottom: '8px' }}>
-        <a href="/agenda" style={{ color: 'var(--teal)', textDecoration: 'none' }}>
-          ← Terug naar agenda
-        </a>
-      </div>
-
-      <h1 style={{ color: 'var(--navy)', marginBottom: '12px' }}>{activity.title}</h1>
-
-      <div style={{ color: 'var(--text-mid)', marginBottom: '24px' }}>
-        <p>📅 {dateStr}</p>
-        {activity.location && <p>📍 {activity.location}</p>}
-        {activity.maxParticipants && (
-          <p>👥 Max. {activity.maxParticipants} deelnemers
-            {!isFull && ` (${activity.maxParticipants - activity._count.registrations} plaatsen beschikbaar)`}
-          </p>
-        )}
-        {activity.registrationDeadline && (
-          <p>⏰ Inschrijven voor {activity.registrationDeadline.toLocaleDateString('nl-BE')}</p>
-        )}
-      </div>
-
-      {activity.description && (
-        <div style={{ marginBottom: '32px', color: 'var(--text-dark)', lineHeight: '1.7' }}>
-          {activity.description.split('\n').map((line, i) => (
-            <p key={i}>{line}</p>
-          ))}
+    <>
+      {/* HERO */}
+      <section className="activity-hero">
+        <div className="activity-hero-inner">
+          <a href="/agenda" className="activity-hero-back">← Terug naar agenda</a>
+          <div className="hero-badge" style={{ marginBottom: '20px' }}>
+            CareAIgent · Opleidingen &amp; Evenementen
+          </div>
+          <h1>{activity.title}</h1>
+          <div className="activity-hero-meta">
+            <span>📅 {dateStr}</span>
+            {activity.location && <span>📍 {activity.location}</span>}
+            {activity.dateEnd && (
+              <span>
+                🕐 {timeStr} – {activity.dateEnd.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
+            {spotsLeft !== null && !isClosed && !isFull && (
+              <span className={spotsLeft <= 5 ? 'meta-highlight' : ''}>
+                👥 {spotsLeft} {spotsLeft === 1 ? 'plaats' : 'plaatsen'} beschikbaar
+              </span>
+            )}
+            {activity.registrationDeadline && (
+              <span>
+                ⏰ Inschrijven vóór{' '}
+                {activity.registrationDeadline.toLocaleDateString('nl-BE', {
+                  day: 'numeric',
+                  month: 'long',
+                })}
+              </span>
+            )}
+          </div>
         </div>
-      )}
+      </section>
 
-      {isClosed || isFull ? (
-        <div className="registration-closed">
-          <p style={{ fontWeight: 600, marginBottom: '8px' }}>
-            {isFull ? '🔴 Deze activiteit is volzet.' : '🔒 Inschrijvingen zijn gesloten.'}
-          </p>
-          <p>Neem contact op via <a href="mailto:eric.lodewyckx@pxl.be">eric.lodewyckx@pxl.be</a> voor meer informatie.</p>
+      {/* TWO-COLUMN CONTENT */}
+      <section className="activity-content-section">
+        <div className="activity-content-grid">
+          {/* LEFT: description */}
+          <div className="activity-description">
+            {activity.description ? (
+              activity.description.split('\n').map((line, i) => (
+                <p key={i}>{line}</p>
+              ))
+            ) : (
+              <p style={{ color: 'var(--text-mid)', fontStyle: 'italic' }}>
+                Geen verdere beschrijving beschikbaar.
+              </p>
+            )}
+          </div>
+
+          {/* RIGHT: form card */}
+          <div className={`activity-form-card${isClosed || isFull ? ' activity-closed-card' : ''}`}>
+            <div className="activity-form-card-header">
+              <h2>
+                {isFull ? '🔴 Volzet' : isClosed ? '🔒 Gesloten' : 'Inschrijven'}
+              </h2>
+            </div>
+            <div className="activity-form-card-body">
+              {isClosed || isFull ? (
+                <>
+                  <p style={{ fontWeight: 600, marginBottom: '8px', color: 'var(--text-dark)' }}>
+                    {isFull
+                      ? 'Deze activiteit is volzet.'
+                      : 'Inschrijvingen zijn gesloten.'}
+                  </p>
+                  <p style={{ color: 'var(--text-mid)', fontSize: '0.9rem' }}>
+                    Neem contact op via{' '}
+                    <a href="mailto:eric.lodewyckx@pxl.be" style={{ color: 'var(--teal)' }}>
+                      eric.lodewyckx@pxl.be
+                    </a>{' '}
+                    voor meer informatie.
+                  </p>
+                </>
+              ) : (
+                <RegistrationForm activitySlug={activity.slug} extraFields={extraFields} />
+              )}
+            </div>
+          </div>
         </div>
-      ) : (
-        <>
-          <h2 style={{ color: 'var(--navy)', marginBottom: '8px' }}>Inschrijvingsformulier</h2>
-          <RegistrationForm activitySlug={activity.slug} extraFields={extraFields} />
-        </>
-      )}
-    </section>
+      </section>
+    </>
   );
 }
