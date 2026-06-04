@@ -25,6 +25,14 @@ type RegistrationLike = {
   email: string;
 };
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 export function generateIcal(activity: ActivityLike): string {
   const cal = ical({ name: 'CareAIgent' });
   cal.createEvent({
@@ -57,11 +65,11 @@ export async function sendConfirmationEmail(
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1a1a2e;">
         <h1 style="color: #002841;">Bevestiging inschrijving</h1>
-        <p>Beste ${registration.voornaam} ${registration.naam},</p>
-        <p>Uw inschrijving voor <strong>${activity.title}</strong> is bevestigd.</p>
+        <p>Beste ${escapeHtml(registration.voornaam)} ${escapeHtml(registration.naam)},</p>
+        <p>Uw inschrijving voor <strong>${escapeHtml(activity.title)}</strong> is bevestigd.</p>
         <ul>
           <li><strong>Datum:</strong> ${dateFormatted}</li>
-          <li><strong>Locatie:</strong> ${activity.location ?? 'Wordt later meegedeeld'}</li>
+          <li><strong>Locatie:</strong> ${escapeHtml(activity.location ?? 'Wordt later meegedeeld')}</li>
         </ul>
         <p>U vindt een kalenderuitnodiging in bijlage (.ics bestand).</p>
         <p>Bij vragen: <a href="mailto:eric.lodewyckx@pxl.be">eric.lodewyckx@pxl.be</a></p>
@@ -72,6 +80,7 @@ export async function sendConfirmationEmail(
       {
         filename: 'uitnodiging.ics',
         content: Buffer.from(icsContent).toString('base64'),
+        contentType: 'text/calendar; charset=utf-8',
       },
     ],
   });
