@@ -1275,6 +1275,117 @@ footer {
 .registration-form { margin-top: 40px; }
 .registration-closed { background: #fff3e0; border-radius: 8px; padding: 20px; margin-top: 20px; }
 
+/* Activity detail page — redesign */
+.activity-hero {
+  background: var(--navy);
+  padding: 130px 48px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.activity-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(33,154,189,0.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+.activity-hero-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.activity-hero-back {
+  display: inline-block;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 0.875rem;
+  margin-bottom: 24px;
+  transition: color 0.2s;
+}
+.activity-hero-back:hover { color: var(--teal-light); }
+.activity-hero h1 {
+  font-family: 'Raleway', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  color: var(--white);
+  margin: 0 0 24px;
+  line-height: 1.2;
+}
+.activity-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  color: rgba(255,255,255,0.75);
+  font-size: 0.9rem;
+}
+.activity-hero-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.activity-hero-meta .meta-highlight {
+  color: var(--teal-light);
+  font-weight: 600;
+}
+
+/* Two-column content layout */
+.activity-content-section {
+  background: var(--off-white);
+  padding: 64px 48px 100px;
+}
+.activity-content-grid {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 40px;
+  align-items: start;
+}
+.activity-description {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 2px 16px rgba(0,40,65,0.07);
+  color: var(--text-dark);
+  line-height: 1.75;
+}
+.activity-description p { margin: 0 0 16px; }
+.activity-description p:last-child { margin: 0; }
+.activity-form-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,40,65,0.1);
+  overflow: hidden;
+  position: sticky;
+  top: 100px;
+}
+.activity-form-card-header {
+  background: var(--navy);
+  padding: 20px 28px;
+  border-top: 4px solid var(--teal);
+}
+.activity-form-card-header h2 {
+  color: var(--white);
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+.activity-form-card-body {
+  padding: 28px;
+}
+.activity-form-card-body .registration-form {
+  margin-top: 0;
+}
+.activity-closed-card .activity-form-card-header {
+  background: #fbe9d7;
+  border-top: 4px solid #e65100;
+}
+.activity-closed-card .activity-form-card-header h2 {
+  color: #b84f00;
+}
+
 /* ===== Admin ===== */
 .admin-layout { display: flex; min-height: 100vh; }
 .admin-sidebar { width: 240px; background: var(--navy); color: white; padding: 24px; flex-shrink: 0; }
@@ -1778,6 +1889,12 @@ footer {
     text-align: center;
     padding: 16px 20px;
   }
+  .activity-hero { padding: 100px 20px 60px; }
+  .activity-content-section { padding: 40px 20px 60px; }
+  .activity-content-grid { grid-template-columns: 1fr; }
+  .activity-form-card { position: static; }
+  .activity-description { padding: 24px; }
+  .activity-form-card-body { padding: 20px; }
 }
 
 @media (max-width: 900px) {
