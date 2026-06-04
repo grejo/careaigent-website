@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import ContactForm from '@/components/ContactForm';
 
 export const metadata: Metadata = {
   title: 'CareAIgent — AI voor Slimmere Zorg in Vlaanderen',
@@ -509,39 +510,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <form
-            className="contact-form"
-            name="contact"
-            method="POST"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
-            action="/bedankt"
-          >
-            <input type="hidden" name="form-name" value="contact" />
-            <p style={{ display: 'none' }}>
-              <label>Niet invullen: <input name="bot-field" /></label>
-            </p>
-
-            <div className="form-group">
-              <label htmlFor="naam">VOORNAAM &amp; ACHTERNAAM</label>
-              <input type="text" id="naam" name="naam" placeholder="Jan Peeters" required />
-            </div>
-            <div className="form-group">
-              <label htmlFor="organisatie">ORGANISATIE</label>
-              <input type="text" id="organisatie" name="organisatie" placeholder="Jessa Ziekenhuis" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="email">E-MAILADRES</label>
-              <input type="email" id="email" name="email" placeholder="jan.peeters@organisatie.be" required />
-            </div>
-            <div className="form-group">
-              <label htmlFor="bericht">UW VRAAG OF BERICHT</label>
-              <textarea id="bericht" name="bericht" placeholder="Stel hier uw vraag over het project..." required />
-            </div>
-            <button type="submit" className="btn-primary" style={{ width: '100%' }}>
-              Verstuur bericht →
-            </button>
-          </form>
+          <ContactForm />
         </div>
       </section>
     </>
