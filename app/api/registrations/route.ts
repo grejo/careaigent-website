@@ -48,6 +48,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Activiteit is volzet' }, { status: 409 });
   }
 
+  if (
+    activity.registrationDeadline !== null &&
+    new Date() > activity.registrationDeadline
+  ) {
+    return NextResponse.json({ error: 'De inschrijvingstermijn is verstreken' }, { status: 409 });
+  }
+
   // Save registration
   let registration;
   try {

@@ -16,7 +16,11 @@ export async function GET(req: Request, context: { params: Promise<{ id: string 
     prisma.registration.findMany({ where: { activityId: id }, orderBy: { createdAt: 'asc' } }),
   ]);
 
-  const filename = `inschrijvingen-${activity?.slug ?? id}`;
+  if (!activity) {
+    return NextResponse.json({ error: 'Activiteit niet gevonden' }, { status: 404 });
+  }
+
+  const filename = `inschrijvingen-${activity.slug}`;
 
   if (format === 'xlsx') {
     const buffer = await buildExcelBuffer(registrations);

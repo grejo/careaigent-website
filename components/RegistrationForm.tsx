@@ -28,8 +28,13 @@ export default function RegistrationForm({ activitySlug, extraFields }: Props) {
     const formData = new FormData(e.currentTarget);
     const extraData: Record<string, string> = {};
     extraFields.forEach((f) => {
-      const val = formData.get(f.key);
-      if (val !== null) extraData[f.key] = val as string;
+      if (f.type === 'checkbox') {
+        const vals = formData.getAll(f.key);
+        if (vals.length > 0) extraData[f.key] = vals.join(', ');
+      } else {
+        const val = formData.get(f.key);
+        if (val !== null) extraData[f.key] = val as string;
+      }
     });
 
     const body = {
