@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import RegistrationForm from '@/components/RegistrationForm';
 import type { Metadata } from 'next';
@@ -59,8 +60,8 @@ export default async function ActivityPage({ params }: Props) {
       {/* HERO */}
       <section className="activity-hero">
         <div className="activity-hero-inner">
-          <a href="/agenda" className="activity-hero-back">← Terug naar agenda</a>
-          <div className="hero-badge" style={{ marginBottom: '20px' }}>
+          <Link href="/agenda" className="activity-hero-back">← Terug naar agenda</Link>
+          <div className="hero-badge">
             CareAIgent · Opleidingen &amp; Evenementen
           </div>
           <h1>{activity.title}</h1>

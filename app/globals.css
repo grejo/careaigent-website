@@ -1328,6 +1328,9 @@ footer {
   color: var(--teal-light);
   font-weight: 600;
 }
+.activity-hero .hero-badge {
+  margin-bottom: 20px;
+}
 
 /* Two-column content layout */
 .activity-content-section {
@@ -1901,7 +1904,6 @@ footer {
   }
   .activity-hero { padding: 100px 20px 60px; }
   .activity-content-section { padding: 40px 20px 60px; }
-  .activity-content-grid { grid-template-columns: 1fr; }
   .activity-form-card { position: static; }
   .activity-description { padding: 24px; }
   .activity-form-card-body { padding: 20px; }
