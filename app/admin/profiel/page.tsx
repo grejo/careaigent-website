@@ -8,9 +8,9 @@ export const dynamic = 'force-dynamic';
 export default async function ProfielPage({
   searchParams,
 }: {
-  searchParams: Promise<{ success?: string }>;
+  searchParams: Promise<{ success?: string; error?: string }>;
 }) {
-  const { success } = await searchParams;
+  const { success, error } = await searchParams;
   const session = await auth();
   if (!session?.user?.email) redirect('/admin/login');
 
@@ -31,7 +31,9 @@ export default async function ProfielPage({
     if (!admin) return;
 
     const valid = await compare(current, admin.passwordHash);
-    if (!valid) return;
+    if (!valid) {
+      redirect('/admin/profiel?error=wrong_password');
+    }
 
     const passwordHash = await hash(newPw, 12);
     await prisma.admin.update({
@@ -58,6 +60,11 @@ export default async function ProfielPage({
           fontSize: '0.95rem',
         }}>
           ✅ Wachtwoord succesvol gewijzigd.
+        </div>
+      )}
+      {error === 'wrong_password' && (
+        <div style={{ background: '#fdecea', border: '1px solid #f5c6cb', borderRadius: '8px', padding: '12px 20px', color: '#7f1d1d', marginBottom: '24px', maxWidth: '480px', fontSize: '0.95rem' }}>
+          ❌ Huidig wachtwoord is onjuist.
         </div>
       )}
 

@@ -1,10 +1,16 @@
 import { prisma } from '@/lib/db';
 import { hash } from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-export default async function GebruikersPage() {
+export default async function GebruikersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; success?: string }>;
+}) {
+  const { error, success } = await searchParams;
   const admins = await prisma.admin.findMany({
     orderBy: { createdAt: 'asc' },
     select: { id: true, name: true, email: true, createdAt: true },
@@ -20,11 +26,14 @@ export default async function GebruikersPage() {
     if (password.length < 8) return;
 
     const existing = await prisma.admin.findUnique({ where: { email } });
-    if (existing) return;
+    if (existing) {
+      redirect('/admin/gebruikers?error=duplicate');
+    }
 
     const passwordHash = await hash(password, 12);
     await prisma.admin.create({ data: { name, email, passwordHash } });
     revalidatePath('/admin/gebruikers');
+    redirect('/admin/gebruikers?success=1');
   }
 
   return (
@@ -35,6 +44,17 @@ export default async function GebruikersPage() {
       <p style={{ color: 'var(--text-mid)', marginBottom: '32px' }}>
         Beheer de admin-accounts die toegang hebben tot dit portaal.
       </p>
+
+      {success === '1' && (
+        <div style={{ background: '#e8f5e9', border: '1px solid #a5d6a7', borderRadius: '8px', padding: '12px 20px', color: '#1b5e20', marginBottom: '24px', fontSize: '0.95rem' }}>
+          ✅ Gebruiker succesvol aangemaakt.
+        </div>
+      )}
+      {error === 'duplicate' && (
+        <div style={{ background: '#fdecea', border: '1px solid #f5c6cb', borderRadius: '8px', padding: '12px 20px', color: '#7f1d1d', marginBottom: '24px', fontSize: '0.95rem' }}>
+          ❌ Dit e-mailadres is al in gebruik.
+        </div>
+      )}
 
       <div className="admin-table-card">
         <table className="admin-table">
