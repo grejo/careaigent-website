@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type Props = {
   signOutAction: () => Promise<void>;
@@ -9,6 +9,12 @@ type Props = {
 
 export default function AdminNav({ signOutAction }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setMenuOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <>
@@ -63,7 +69,7 @@ export default function AdminNav({ signOutAction }: Props) {
             style={{
               background: 'none',
               border: 'none',
-              color: 'var(--navy)',
+              color: 'rgba(255,255,255,0.8)',
               cursor: 'pointer',
               fontSize: '1rem',
               fontFamily: 'inherit',
