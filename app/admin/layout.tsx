@@ -9,9 +9,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     await signOut({ redirectTo: '/admin/login' });
   }
 
+  if (!session) {
+    return <main style={{ background: 'var(--off-white)', minHeight: '100vh' }}>{children}</main>;
+  }
+
   return (
     <>
-      {session && <AdminNav signOutAction={signOutAction} />}
+      <AdminNav signOutAction={signOutAction} />
       <main className="admin-main">
         <div className="admin-main-inner">
           {children}
