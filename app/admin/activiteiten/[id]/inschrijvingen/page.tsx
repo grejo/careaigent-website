@@ -48,41 +48,43 @@ export default async function InschrijvingenPage({ params }: { params: Promise<{
         {activity.maxParticipants ? ` / max. ${activity.maxParticipants}` : ''}
       </p>
 
-      <table className="admin-table">
-        <thead>
-          <tr>
-            <th>Naam</th>
-            <th>E-mail</th>
-            <th>Telefoon</th>
-            <th>Instelling</th>
-            <th>Functie</th>
-            <th>Datum</th>
-            <th>Acties</th>
-          </tr>
-        </thead>
-        <tbody>
-          {registrations.map((r) => (
-            <tr key={r.id}>
-              <td>{r.voornaam} {r.naam}</td>
-              <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
-              <td>{r.telefoon}</td>
-              <td>{r.instelling}</td>
-              <td>{r.functie}</td>
-              <td>{r.createdAt.toLocaleDateString('nl-BE')}</td>
-              <td>
-                <DeleteRegistrationButton registrationId={r.id} />
-              </td>
-            </tr>
-          ))}
-          {registrations.length === 0 && (
+      <div className="admin-table-card">
+        <table className="admin-table">
+          <thead>
             <tr>
-              <td colSpan={7} style={{ textAlign: 'center', color: 'var(--text-mid)' }}>
-                Nog geen inschrijvingen
-              </td>
+              <th>Naam</th>
+              <th>E-mail</th>
+              <th>Telefoon</th>
+              <th>Instelling</th>
+              <th>Functie</th>
+              <th>Datum</th>
+              <th>Acties</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {registrations.map((r) => (
+              <tr key={r.id}>
+                <td>{r.voornaam} {r.naam}</td>
+                <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
+                <td>{r.telefoon}</td>
+                <td>{r.instelling}</td>
+                <td>{r.functie}</td>
+                <td>{r.createdAt.toLocaleDateString('nl-BE')}</td>
+                <td>
+                  <DeleteRegistrationButton registrationId={r.id} />
+                </td>
+              </tr>
+            ))}
+            {registrations.length === 0 && (
+              <tr>
+                <td colSpan={7} style={{ textAlign: 'center', color: 'var(--text-mid)' }}>
+                  Nog geen inschrijvingen
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
