@@ -5,7 +5,12 @@ import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-export default async function ProfielPage() {
+export default async function ProfielPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ success?: string }>;
+}) {
+  const { success } = await searchParams;
   const session = await auth();
   if (!session?.user?.email) redirect('/admin/login');
 
@@ -44,6 +49,17 @@ export default async function ProfielPage() {
       <p style={{ color: 'var(--text-mid)', marginBottom: '32px' }}>
         Bekijk je accountgegevens en wijzig je wachtwoord.
       </p>
+
+      {success === '1' && (
+        <div style={{
+          background: '#e8f5e9', border: '1px solid #a5d6a7',
+          borderRadius: '8px', padding: '12px 20px',
+          color: '#1b5e20', marginBottom: '24px', maxWidth: '480px',
+          fontSize: '0.95rem',
+        }}>
+          ✅ Wachtwoord succesvol gewijzigd.
+        </div>
+      )}
 
       <div style={{
         background: 'white', borderRadius: '16px',
