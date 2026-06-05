@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { auth, signOut } from '@/auth';
 import AdminNav from '@/components/AdminNav';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -6,7 +6,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   async function signOutAction() {
     'use server';
-    const { signOut } = await import('@/auth');
     await signOut({ redirectTo: '/admin/login' });
   }
 
