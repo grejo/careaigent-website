@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react';
 
 type Props = {
   signOutAction: () => Promise<void>;
+  userName: string;
 };
 
-export default function AdminNav({ signOutAction }: Props) {
+export default function AdminNav({ signOutAction, userName }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -36,17 +37,28 @@ export default function AdminNav({ signOutAction }: Props) {
         <ul className="nav-links">
           <li><Link href="/admin">Dashboard</Link></li>
           <li><Link href="/admin/activiteiten">Activiteiten</Link></li>
+          <li><Link href="/admin/gebruikers">Gebruikers</Link></li>
         </ul>
 
-        <form action={signOutAction} style={{ display: 'flex', alignItems: 'center' }}>
-          <button
-            type="submit"
-            className="nav-cta"
-            style={{ cursor: 'pointer', border: 'none', fontFamily: 'inherit', fontSize: '0.9rem', fontWeight: 600 }}
-          >
-            Uitloggen
-          </button>
-        </form>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {userName && (
+            <Link
+              href="/admin/profiel"
+              style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.875rem', textDecoration: 'none' }}
+            >
+              {userName}
+            </Link>
+          )}
+          <form action={signOutAction} style={{ display: 'flex', alignItems: 'center' }}>
+            <button
+              type="submit"
+              className="nav-cta"
+              style={{ cursor: 'pointer', border: 'none', fontFamily: 'inherit', fontSize: '0.9rem', fontWeight: 600 }}
+            >
+              Uitloggen
+            </button>
+          </form>
+        </div>
 
         <button
           className={`hamburger${menuOpen ? ' open' : ''}`}
@@ -63,6 +75,8 @@ export default function AdminNav({ signOutAction }: Props) {
       <div className={`mobile-menu${menuOpen ? ' open' : ''}`}>
         <Link href="/admin" onClick={() => setMenuOpen(false)}>Dashboard</Link>
         <Link href="/admin/activiteiten" onClick={() => setMenuOpen(false)}>Activiteiten</Link>
+        <Link href="/admin/gebruikers" onClick={() => setMenuOpen(false)}>Gebruikers</Link>
+        <Link href="/admin/profiel" onClick={() => setMenuOpen(false)}>Mijn profiel</Link>
         <form action={signOutAction}>
           <button
             type="submit"

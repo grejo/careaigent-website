@@ -15,7 +15,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <>
-      <AdminNav signOutAction={signOutAction} />
+      <AdminNav
+        signOutAction={signOutAction}
+        userName={session.user?.name ?? session.user?.email ?? ''}
+      />
       <main className="admin-main">
         <div className="admin-main-inner">
           {children}
