@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/db';
+import { Prisma } from '@prisma/client';
 
 export async function POST(
   _req: NextRequest,
@@ -21,20 +22,26 @@ export async function POST(
     suffix++;
   }
 
-  const copy = await prisma.activity.create({
-    data: {
-      title: `${activity.title} (kopie)`,
-      slug,
-      description: activity.description,
-      location: activity.location,
-      maxParticipants: activity.maxParticipants,
-      extraFields: activity.extraFields ?? undefined,
-      isOpen: false,
-      dateStart: activity.dateStart,
-      dateEnd: activity.dateEnd,
-      registrationDeadline: activity.registrationDeadline,
-    },
-  });
+  let copy;
+  try {
+    copy = await prisma.activity.create({
+      data: {
+        title: `${activity.title} (kopie)`,
+        slug,
+        description: activity.description,
+        location: activity.location,
+        maxParticipants: activity.maxParticipants,
+        extraFields: activity.extraFields ?? Prisma.JsonNull,
+        isOpen: false,
+        dateStart: activity.dateStart,
+        dateEnd: activity.dateEnd,
+        registrationDeadline: activity.registrationDeadline,
+      },
+    });
+  } catch (err) {
+    console.error('Duplicate activity error:', err);
+    return NextResponse.json({ error: 'Kopiëren mislukt' }, { status: 500 });
+  }
 
   return NextResponse.json({ id: copy.id }, { status: 201 });
 }
