@@ -28,6 +28,11 @@ async function getActivities() {
 export default async function AgendaPage() {
   const activities = await getActivities();
 
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const upcoming = activities.filter(a => a.dateStart >= now);
+  const past = activities.filter(a => a.dateStart < now).reverse();
+
   return (
     <>
       {/* HERO */}
@@ -65,154 +70,276 @@ export default async function AgendaPage() {
               </p>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-              {activities.map((activity) => {
-                const isFull =
-                  activity.maxParticipants !== null &&
-                  activity._count.registrations >= activity.maxParticipants;
-                const isClosed = !activity.isOpen;
-                const canRegister = !isClosed && !isFull;
+            <>
+              {/* UPCOMING */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+                {upcoming.length === 0 ? (
+                  <p style={{ fontStyle: 'italic', color: 'var(--text-mid)' }}>
+                    Momenteel zijn er geen aankomende activiteiten gepland.
+                  </p>
+                ) : (
+                  upcoming.map((activity) => {
+                    const isFull =
+                      activity.maxParticipants !== null &&
+                      activity._count.registrations >= activity.maxParticipants;
+                    const isClosed = !activity.isOpen;
+                    const canRegister = !isClosed && !isFull;
 
-                const dayNum = activity.dateStart.toLocaleDateString('nl-BE', { day: 'numeric' });
-                const monthYear = activity.dateStart.toLocaleDateString('nl-BE', { month: 'long', year: 'numeric' });
-                const weekday = activity.dateStart.toLocaleDateString('nl-BE', { weekday: 'long' });
-                const timeStr = activity.dateStart.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' });
-                const spotsLeft = activity.maxParticipants
-                  ? activity.maxParticipants - activity._count.registrations
-                  : null;
+                    const dayNum = activity.dateStart.toLocaleDateString('nl-BE', { day: 'numeric' });
+                    const monthYear = activity.dateStart.toLocaleDateString('nl-BE', { month: 'long', year: 'numeric' });
+                    const weekday = activity.dateStart.toLocaleDateString('nl-BE', { weekday: 'long' });
+                    const timeStr = activity.dateStart.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' });
+                    const spotsLeft = activity.maxParticipants
+                      ? activity.maxParticipants - activity._count.registrations
+                      : null;
 
-                return (
-                  <div
-                    key={activity.id}
-                    style={{
-                      background: 'white',
-                      borderRadius: '16px',
-                      boxShadow: '0 2px 20px rgba(0,40,65,0.08)',
-                      overflow: 'hidden',
-                      display: 'flex',
-                      borderLeft: `6px solid ${canRegister ? 'var(--teal)' : 'var(--text-light)'}`,
-                    }}
-                  >
-                    {/* Date block */}
-                    <div style={{
-                      background: canRegister ? 'var(--navy)' : 'var(--text-mid)',
-                      color: 'white',
-                      minWidth: '110px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '24px 16px',
-                      textAlign: 'center',
-                      flexShrink: 0,
-                    }}>
-                      <span style={{ fontSize: '2.5rem', fontWeight: 900, lineHeight: 1, fontFamily: 'Raleway, sans-serif' }}>
-                        {dayNum}
-                      </span>
-                      <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', marginTop: '4px', opacity: 0.85 }}>
-                        {monthYear}
-                      </span>
-                      <span style={{ fontSize: '0.75rem', marginTop: '8px', color: 'var(--teal-light)', fontWeight: 600 }}>
-                        {timeStr}
-                      </span>
-                    </div>
-
-                    {/* Content */}
-                    <div style={{ padding: '28px 32px', flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
-                        <span style={{
-                          fontSize: '0.7rem',
-                          fontWeight: 700,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.08em',
-                          color: 'var(--teal-dark)',
-                          background: 'rgba(33,154,189,0.1)',
-                          padding: '3px 10px',
-                          borderRadius: '20px',
+                    return (
+                      <div
+                        key={activity.id}
+                        style={{
+                          background: 'white',
+                          borderRadius: '16px',
+                          boxShadow: '0 2px 20px rgba(0,40,65,0.08)',
+                          overflow: 'hidden',
+                          display: 'flex',
+                          borderLeft: `6px solid ${canRegister ? 'var(--teal)' : 'var(--text-light)'}`,
+                        }}
+                      >
+                        {/* Date block */}
+                        <div style={{
+                          background: canRegister ? 'var(--navy)' : 'var(--text-mid)',
+                          color: 'white',
+                          minWidth: '110px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '24px 16px',
+                          textAlign: 'center',
+                          flexShrink: 0,
                         }}>
-                          {weekday}
-                        </span>
-                        {!canRegister && (
-                          <span style={{
-                            fontSize: '0.7rem',
+                          <span style={{ fontSize: '2.5rem', fontWeight: 900, lineHeight: 1, fontFamily: 'Raleway, sans-serif' }}>
+                            {dayNum}
+                          </span>
+                          <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', marginTop: '4px', opacity: 0.85 }}>
+                            {monthYear}
+                          </span>
+                          <span style={{ fontSize: '0.75rem', marginTop: '8px', color: 'var(--teal-light)', fontWeight: 600 }}>
+                            {timeStr}
+                          </span>
+                        </div>
+
+                        {/* Content */}
+                        <div style={{ padding: '28px 32px', flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
+                            <span style={{
+                              fontSize: '0.7rem',
+                              fontWeight: 700,
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.08em',
+                              color: 'var(--teal-dark)',
+                              background: 'rgba(33,154,189,0.1)',
+                              padding: '3px 10px',
+                              borderRadius: '20px',
+                            }}>
+                              {weekday}
+                            </span>
+                            {!canRegister && (
+                              <span style={{
+                                fontSize: '0.7rem',
+                                fontWeight: 700,
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.08em',
+                                color: isFull ? '#b71c1c' : 'var(--text-mid)',
+                                background: isFull ? 'rgba(183,28,28,0.1)' : 'rgba(0,0,0,0.05)',
+                                padding: '3px 10px',
+                                borderRadius: '20px',
+                              }}>
+                                {isFull ? 'Volzet' : 'Gesloten'}
+                              </span>
+                            )}
+                          </div>
+
+                          <h2 style={{
+                            color: 'var(--navy)',
+                            fontSize: '1.3rem',
                             fontWeight: 700,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.08em',
-                            color: isFull ? '#b71c1c' : 'var(--text-mid)',
-                            background: isFull ? 'rgba(183,28,28,0.1)' : 'rgba(0,0,0,0.05)',
-                            padding: '3px 10px',
-                            borderRadius: '20px',
+                            fontFamily: 'Raleway, sans-serif',
+                            lineHeight: 1.3,
+                            margin: 0,
                           }}>
-                            {isFull ? 'Volzet' : 'Gesloten'}
-                          </span>
-                        )}
+                            {activity.title}
+                          </h2>
+
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', color: 'var(--text-mid)', fontSize: '0.875rem' }}>
+                            {activity.location && (
+                              <span>📍 {activity.location}</span>
+                            )}
+                            {activity.dateEnd && (
+                              <span>
+                                🕐 {timeStr} – {activity.dateEnd.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            )}
+                            {spotsLeft !== null && canRegister && (
+                              <span style={{ color: spotsLeft <= 5 ? '#e65100' : 'var(--teal-dark)', fontWeight: 600 }}>
+                                👥 {spotsLeft} {spotsLeft === 1 ? 'plaats' : 'plaatsen'} beschikbaar
+                              </span>
+                            )}
+                            {activity.registrationDeadline && (
+                              <span>
+                                ⏰ Inschrijven vóór{' '}
+                                {activity.registrationDeadline.toLocaleDateString('nl-BE', { day: 'numeric', month: 'long' })}
+                              </span>
+                            )}
+                          </div>
+
+                          {activity.description && (
+                            <p style={{ color: 'var(--text-mid)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
+                              {activity.description.length > 220
+                                ? activity.description.slice(0, 220) + '…'
+                                : activity.description}
+                            </p>
+                          )}
+
+                          <div style={{ marginTop: '8px' }}>
+                            {canRegister ? (
+                              <Link
+                                href={`/activiteiten/${activity.slug}`}
+                                className="btn-primary"
+                                style={{ display: 'inline-block' }}
+                              >
+                                Inschrijven →
+                              </Link>
+                            ) : (
+                              <span style={{
+                                color: 'var(--text-light)',
+                                fontStyle: 'italic',
+                                fontSize: '0.875rem',
+                              }}>
+                                {isFull ? 'Deze activiteit is volzet.' : 'Inschrijvingen zijn gesloten.'}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
+                    );
+                  })
+                )}
+              </div>
 
-                      <h2 style={{
-                        color: 'var(--navy)',
-                        fontSize: '1.3rem',
-                        fontWeight: 700,
-                        fontFamily: 'Raleway, sans-serif',
-                        lineHeight: 1.3,
-                        margin: 0,
-                      }}>
-                        {activity.title}
-                      </h2>
+              {/* GESCHIEDENIS */}
+              {past.length > 0 && (
+                <>
+                  <h2 className="agenda-history-title">Geschiedenis</h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+                    {past.map((activity) => {
+                      const dayNum = activity.dateStart.toLocaleDateString('nl-BE', { day: 'numeric' });
+                      const monthYear = activity.dateStart.toLocaleDateString('nl-BE', { month: 'long', year: 'numeric' });
+                      const weekday = activity.dateStart.toLocaleDateString('nl-BE', { weekday: 'long' });
+                      const timeStr = activity.dateStart.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' });
 
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', color: 'var(--text-mid)', fontSize: '0.875rem' }}>
-                        {activity.location && (
-                          <span>📍 {activity.location}</span>
-                        )}
-                        {activity.dateEnd && (
-                          <span>
-                            🕐 {timeStr} – {activity.dateEnd.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        )}
-                        {spotsLeft !== null && canRegister && (
-                          <span style={{ color: spotsLeft <= 5 ? '#e65100' : 'var(--teal-dark)', fontWeight: 600 }}>
-                            👥 {spotsLeft} {spotsLeft === 1 ? 'plaats' : 'plaatsen'} beschikbaar
-                          </span>
-                        )}
-                        {activity.registrationDeadline && (
-                          <span>
-                            ⏰ Inschrijven vóór{' '}
-                            {activity.registrationDeadline.toLocaleDateString('nl-BE', { day: 'numeric', month: 'long' })}
-                          </span>
-                        )}
-                      </div>
-
-                      {activity.description && (
-                        <p style={{ color: 'var(--text-mid)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
-                          {activity.description.length > 220
-                            ? activity.description.slice(0, 220) + '…'
-                            : activity.description}
-                        </p>
-                      )}
-
-                      <div style={{ marginTop: '8px' }}>
-                        {canRegister ? (
-                          <Link
-                            href={`/activiteiten/${activity.slug}`}
-                            className="btn-primary"
-                            style={{ display: 'inline-block' }}
-                          >
-                            Inschrijven →
-                          </Link>
-                        ) : (
-                          <span style={{
-                            color: 'var(--text-light)',
-                            fontStyle: 'italic',
-                            fontSize: '0.875rem',
+                      return (
+                        <div
+                          key={activity.id}
+                          style={{
+                            background: 'white',
+                            borderRadius: '16px',
+                            boxShadow: '0 2px 20px rgba(0,40,65,0.08)',
+                            overflow: 'hidden',
+                            display: 'flex',
+                            borderLeft: '6px solid var(--text-mid)',
+                          }}
+                        >
+                          {/* Date block */}
+                          <div style={{
+                            background: 'var(--text-mid)',
+                            color: 'white',
+                            minWidth: '110px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '24px 16px',
+                            textAlign: 'center',
+                            flexShrink: 0,
                           }}>
-                            {isFull ? 'Deze activiteit is volzet.' : 'Inschrijvingen zijn gesloten.'}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                            <span style={{ fontSize: '2.5rem', fontWeight: 900, lineHeight: 1, fontFamily: 'Raleway, sans-serif' }}>
+                              {dayNum}
+                            </span>
+                            <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', marginTop: '4px', opacity: 0.85 }}>
+                              {monthYear}
+                            </span>
+                            <span style={{ fontSize: '0.75rem', marginTop: '8px', color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>
+                              {timeStr}
+                            </span>
+                          </div>
+
+                          {/* Content */}
+                          <div style={{ padding: '28px 32px', flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
+                              <span style={{
+                                fontSize: '0.7rem',
+                                fontWeight: 700,
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.08em',
+                                color: 'var(--text-mid)',
+                                background: 'rgba(0,0,0,0.06)',
+                                padding: '3px 10px',
+                                borderRadius: '20px',
+                              }}>
+                                {weekday}
+                              </span>
+                              <span style={{
+                                fontSize: '0.7rem',
+                                fontWeight: 700,
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.08em',
+                                color: 'var(--text-mid)',
+                                background: 'rgba(0,0,0,0.06)',
+                                padding: '3px 10px',
+                                borderRadius: '20px',
+                              }}>
+                                Afgelopen
+                              </span>
+                            </div>
+
+                            <h2 style={{
+                              color: 'var(--text-dark)',
+                              fontSize: '1.3rem',
+                              fontWeight: 700,
+                              fontFamily: 'Raleway, sans-serif',
+                              lineHeight: 1.3,
+                              margin: 0,
+                            }}>
+                              {activity.title}
+                            </h2>
+
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', color: 'var(--text-mid)', fontSize: '0.875rem' }}>
+                              {activity.location && (
+                                <span>📍 {activity.location}</span>
+                              )}
+                              {activity.dateEnd && (
+                                <span>
+                                  🕐 {timeStr} – {activity.dateEnd.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                              )}
+                            </div>
+
+                            {activity.description && (
+                              <p style={{ color: 'var(--text-mid)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
+                                {activity.description.length > 220
+                                  ? activity.description.slice(0, 220) + '…'
+                                  : activity.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
+                </>
+              )}
+            </>
           )}
         </div>
       </section>
