@@ -20,10 +20,10 @@ export default function Footer() {
             />
             <div className="footer-divider" />
             <Image
-              src="/images/index-004.png"
-              alt="VLAIO"
-              width={120}
-              height={48}
+              src="/images/vlaio-biovia.png"
+              alt="VLAIO · Biovia — samen voor #sterkgroeien"
+              width={200}
+              height={64}
               className="footer-logo-img footer-logo-vlaio"
               style={{ objectFit: 'contain' }}
             />
@@ -88,7 +88,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="footer-bottom">
         <span>© {year} Hogeschool PXL — CareAIgent</span>
-        <span className="footer-bottom-right">Een VLAIO TETRA-project · PXL Zorginnovatie</span>
+        <span className="footer-bottom-right">Een VLAIO TETRA-project via Biovia · PXL Zorginnovatie</span>
       </div>
     </footer>
   );

@@ -5,9 +5,9 @@ import ContactForm from '@/components/ContactForm';
 export const metadata: Metadata = {
   title: 'CareAIgent — AI voor Slimmere Zorg in Vlaanderen',
   description:
-    'CareAIgent onderzoekt hoe AI de administratieve last voor zorgprofessionals in Vlaanderen kan verlichten. Een VLAIO TETRA-project van PXL Zorginnovatie samen met zorginstellingen en technologiebedrijven.',
+    'CareAIgent onderzoekt hoe AI de administratieve last voor zorgprofessionals in Vlaanderen kan verlichten. Een VLAIO TETRA-project via Biovia, uitgevoerd door PXL Zorginnovatie samen met zorginstellingen en technologiebedrijven.',
   keywords:
-    'AI zorg Vlaanderen, kunstmatige intelligentie zorgsector, administratieve last zorgprofessionals, VLAIO TETRA, PXL Zorginnovatie, CareAIgent, AI zorgverleners',
+    'AI zorg Vlaanderen, kunstmatige intelligentie zorgsector, administratieve last zorgprofessionals, VLAIO TETRA, Biovia, PXL Zorginnovatie, CareAIgent, AI zorgverleners',
   openGraph: {
     type: 'website',
     url: 'https://careaigent.be/',
@@ -37,13 +37,20 @@ const jsonLd = {
   url: 'https://careaigent.be/',
   description:
     'CareAIgent onderzoekt hoe bestaande AI-oplossingen de administratieve last voor zorgprofessionals concreet kunnen verlichten via praktijkgericht onderzoek en co-creatie met zorginstellingen en technologiebedrijven.',
-  keywords: 'AI, zorg, Vlaanderen, administratie, PXL, VLAIO',
+  keywords: 'AI, zorg, Vlaanderen, administratie, PXL, VLAIO, Biovia',
   inLanguage: 'nl-BE',
-  funder: {
-    '@type': 'Organization',
-    name: 'VLAIO',
-    url: 'https://www.vlaio.be/',
-  },
+  funder: [
+    {
+      '@type': 'Organization',
+      name: 'VLAIO',
+      url: 'https://www.vlaio.be/',
+    },
+    {
+      '@type': 'Organization',
+      name: 'Biovia',
+      url: 'https://biovia.be/',
+    },
+  ],
   sourceOrganization: {
     '@type': 'EducationalOrganization',
     name: 'PXL Zorginnovatie',
@@ -92,7 +99,7 @@ export default function HomePage() {
             </a>
           </div>
           <div className="vlaio-badge">
-            <strong>VLAIO</strong> TETRA-project · 2025–2027 · Hogeschool PXL
+            <strong>VLAIO</strong> TETRA-project via <strong>Biovia</strong> · 2025–2027 · Hogeschool PXL
           </div>
         </div>
 
@@ -305,6 +312,29 @@ export default function HomePage() {
           CareAIgent wordt mogelijk gemaakt door een breed netwerk van zorgorganisaties,
           technologiebedrijven en kennisinstellingen.
         </p>
+
+        {/* Ondersteund door VLAIO / Biovia */}
+        <div className="partner-category" style={{ textAlign: 'center', marginBottom: '48px' }}>
+          <div className="partner-category-label" style={{ justifyContent: 'center' }}>
+            <span className="partner-cat-icon">🌱</span> Ondersteund door
+          </div>
+          <a
+            href="https://biovia.be"
+            target="_blank"
+            rel="noopener"
+            style={{ display: 'inline-block', marginTop: '16px' }}
+            aria-label="VLAIO en Biovia — samen voor #sterkgroeien"
+          >
+            <img
+              src="/images/vlaio-biovia.png"
+              alt="VLAIO · Biovia — samen voor #sterkgroeien"
+              style={{ maxWidth: '360px', width: '100%', height: 'auto' }}
+            />
+          </a>
+          <p style={{ margin: '16px auto 0', maxWidth: '640px', fontSize: '14px', color: 'var(--muted, #666)' }}>
+            CareAIgent is een VLAIO TETRA-project dat tot stand kwam via <a href="https://biovia.be" target="_blank" rel="noopener"><strong>Biovia</strong></a>, de Vlaamse speerpuntcluster voor One Health-innovatie.
+          </p>
+        </div>
 
         {/* Zorgorganisaties */}
         <div className="partner-category">
