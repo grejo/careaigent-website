@@ -370,6 +370,7 @@ export default function HomePage() {
             <a className="partner-name-card" href="https://spikes.be" target="_blank" rel="noopener">Spikes</a>
             <a className="partner-name-card" href="https://www.innatify.com" target="_blank" rel="noopener">Innatify</a>
             <a className="partner-name-card" href="https://www.studio55.ai" target="_blank" rel="noopener">Studio55</a>
+            <a className="partner-name-card" href="https://www.g2speech.com" target="_blank" rel="noopener">G2Speech</a>
           </div>
         </div>
 
