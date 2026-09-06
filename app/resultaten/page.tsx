@@ -20,7 +20,7 @@ type ResultItem =
       tags: string[];
       pdf: string;
       download: string;
-      stats: { num: string; lbl: string }[];
+      stats?: { num: string; lbl: string }[];
     }
   | {
       type: 'photos';
@@ -48,6 +48,15 @@ const resultData: Record<string, ResultItem> = {
       { num: '65%', lbl: 'Ziet hoog potentieel' },
       { num: '12', lbl: 'Bevindingen' },
     ],
+  },
+  'begeleidingsgroep-sep': {
+    type: 'pdf',
+    date: 'September 2026 · Begeleidingsgroep',
+    title: 'Begeleidingsgroep 2 — Projectupdate',
+    desc: 'Presentatie voor de tweede begeleidingsgroep van het CareAIgent-project op 3 september 2026. Een overzicht van de nieuwe partners, de resultaten uit de voorbije periode, de living labs en de vervolgstappen — in co-creatie met zorginstellingen, technologiepartners en onderzoekers.',
+    tags: ['Begeleidingsgroep', 'Co-creatie', 'Projectupdate', '3 september 2026'],
+    pdf: '/begeleidingsgroep-sep2026.pdf',
+    download: 'CareAIgent-begeleidingsgroep-sep2026.pdf',
   },
   'studiedag-mei': {
     type: 'photos',
@@ -213,14 +222,16 @@ function Modal({
         <div className="modal-body">
           {data.type === 'pdf' && (
             <div>
-              <div className="pdf-stats">
-                {data.stats.map((s) => (
-                  <div key={s.lbl} className="pdf-stat">
-                    <span className="num">{s.num}</span>
-                    <span className="lbl">{s.lbl}</span>
-                  </div>
-                ))}
-              </div>
+              {data.stats && (
+                <div className="pdf-stats">
+                  {data.stats.map((s) => (
+                    <div key={s.lbl} className="pdf-stat">
+                      <span className="num">{s.num}</span>
+                      <span className="lbl">{s.lbl}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
               <div className="pdf-viewer-wrap">
                 <iframe
                   src={`${data.pdf}#toolbar=1&navpanes=0`}
@@ -397,6 +408,28 @@ export default function ResultatenPage() {
                   <span className="timeline-date">Mei 2026</span>
                   <h3>Studiedag AI en technologie in de zorg</h3>
                   <p>80+ deelnemers · Bluepoint Antwerpen · 12 mei 2026</p>
+                  <span className="timeline-hint">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    Klik voor meer info
+                  </span>
+                </div>
+              </div>
+
+              <div
+                className="timeline-item"
+                id="begeleidingsgroep-sep"
+                onClick={() => openModal('begeleidingsgroep-sep')}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="timeline-dot"></div>
+                <div className="timeline-card">
+                  <span className="timeline-date">September 2026</span>
+                  <h3>Begeleidingsgroep 2 — Projectupdate</h3>
+                  <p>Nieuwe partners, resultaten &amp; living labs · 3 september 2026</p>
                   <span className="timeline-hint">
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <circle cx="12" cy="12" r="10" />
