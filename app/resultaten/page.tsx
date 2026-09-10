@@ -49,6 +49,15 @@ const resultData: Record<string, ResultItem> = {
       { num: '12', lbl: 'Bevindingen' },
     ],
   },
+  'literatuurstudie-feb': {
+    type: 'pdf',
+    date: 'Februari 2026 · Literatuurstudie',
+    title: 'Literatuurstudie — AI en administratieve last in de zorg',
+    desc: 'Een literatuurstudie naar internationale academische en praktijkgerichte evidentie over AI in administratieve zorgprocessen, met focus op werkdrukverlichting, gebruikservaring, infrastructuur, kosten en adoptie. Bevat ook een implementatiekader op basis van het ADKAR-model voor verantwoorde en duurzame toepassing in zorgorganisaties.',
+    tags: ['Literatuurstudie', 'AI-scribes', 'ADKAR-model', 'Werkdrukverlichting'],
+    pdf: '/literatuurstudie-feb2026.pdf',
+    download: 'CareAIgent-literatuurstudie-feb2026.pdf',
+  },
   'begeleidingsgroep-sep': {
     type: 'pdf',
     date: 'September 2026 · Begeleidingsgroep',
@@ -386,6 +395,28 @@ export default function ResultatenPage() {
                   <span className="timeline-date">Januari 2026</span>
                   <h3>AI in de Vlaamse Zorgsector</h3>
                   <p>Bevraging bij 201 zorgprofessionals · Technologiebeurs</p>
+                  <span className="timeline-hint">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    Klik voor meer info
+                  </span>
+                </div>
+              </div>
+
+              <div
+                className="timeline-item"
+                id="literatuurstudie-feb"
+                onClick={() => openModal('literatuurstudie-feb')}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="timeline-dot"></div>
+                <div className="timeline-card">
+                  <span className="timeline-date">Februari 2026</span>
+                  <h3>Literatuurstudie — AI en administratieve last in de zorg</h3>
+                  <p>Internationale evidentie &amp; ADKAR-implementatiekader</p>
                   <span className="timeline-hint">
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <circle cx="12" cy="12" r="10" />
