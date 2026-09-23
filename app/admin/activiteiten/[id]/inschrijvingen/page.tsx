@@ -1,7 +1,10 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import DeleteRegistrationButton from '@/components/admin/DeleteRegistrationButton';
-import ToggleActivityButton from '@/components/admin/ToggleActivityButton';
+import ToggleActivityFlagButton from '@/components/admin/ToggleActivityFlagButton';
+import CopyButton from '@/components/admin/CopyButton';
+import { isAfgelopen } from '@/lib/activityStatus';
+import { siteUrl } from '@/lib/site';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
@@ -15,6 +18,9 @@ export default async function InschrijvingenPage({ params }: { params: Promise<{
 
   if (!activity) notFound();
 
+  const afgelopen = isAfgelopen(activity);
+  const algemeneLink = `${siteUrl()}/evaluatie?editie=${activity.slug}`;
+
   return (
     <div>
       <div className="admin-page-header">
@@ -27,7 +33,18 @@ export default async function InschrijvingenPage({ params }: { params: Promise<{
           </h1>
         </div>
         <div className="admin-actions">
-          <ToggleActivityButton activityId={activity.id} isOpen={activity.isOpen} />
+          {!afgelopen && (
+            <ToggleActivityFlagButton activityId={activity.id} field="isOpen" value={activity.isOpen} />
+          )}
+          <ToggleActivityFlagButton
+            activityId={activity.id}
+            field="isHidden"
+            value={activity.isHidden}
+            confirm={activity.isHidden ? undefined : 'Deze activiteit verdwijnt van de agenda en de detailpagina. Doorgaan?'}
+          />
+          <Link href={`/admin/activiteiten/${id}/deelnemers-mail`} className="btn-primary">
+            ✉ Mail naar deelnemers
+          </Link>
           <a
             href={`/api/admin/activities/${id}/registrations/export?format=csv`}
             className="btn-secondary"
@@ -41,6 +58,34 @@ export default async function InschrijvingenPage({ params }: { params: Promise<{
             Download Excel
           </a>
         </div>
+      </div>
+
+      <div className="admin-table-card" style={{ padding: '16px 20px', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <strong style={{ color: 'var(--navy)' }}>Evaluatie</strong>{' '}
+            <span style={{ color: 'var(--text-mid)' }}>
+              {activity.evaluatieOpen ? '🟢 open' : 'gesloten'} ·{' '}
+              <Link href={`/admin/evaluatie?activiteit=${id}`} style={{ color: 'var(--teal)' }}>
+                resultaten bekijken
+              </Link>
+            </span>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            <ToggleActivityFlagButton activityId={activity.id} field="evaluatieOpen" value={activity.evaluatieOpen} small />
+            <ToggleActivityFlagButton activityId={activity.id} field="evaluatieOpenLink" value={activity.evaluatieOpenLink} small />
+          </div>
+        </div>
+        {activity.evaluatieOpenLink && (
+          <div style={{ marginTop: '12px', display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', fontSize: '0.875rem' }}>
+            <span style={{ color: 'var(--text-mid)' }}>Algemene link (voor QR-code):</span>
+            <code style={{ wordBreak: 'break-all' }}>{algemeneLink}</code>
+            <CopyButton text={algemeneLink} />
+          </div>
+        )}
+        <p style={{ color: 'var(--text-mid)', fontSize: '0.8rem', marginTop: '8px', marginBottom: 0 }}>
+          Persoonlijke links (één keer bruikbaar) verstuur je via &lsquo;Mail naar deelnemers&rsquo;.
+        </p>
       </div>
 
       <p style={{ color: 'var(--text-mid)', marginBottom: '16px' }}>

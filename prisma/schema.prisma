@@ -17,9 +17,18 @@ model Activity {
   maxParticipants      Int?
   registrationDeadline DateTime?
   isOpen               Boolean        @default(true)
+  /// Volledig verbergen van de publieke site (agenda, detailpagina, API).
+  isHidden             Boolean        @default(false)
+  /// Evaluatieformulier open voor deze activiteit.
+  evaluatieOpen        Boolean        @default(false)
+  /// Algemene (niet-persoonlijke) evaluatielink / QR-code toegelaten.
+  evaluatieOpenLink    Boolean        @default(false)
   extraFields          Json           @default("[]")
   createdAt            DateTime       @default(now())
   registrations        Registration[]
+  evaluaties           EvaluatieAntwoord[]
+  bijlagen             ActiviteitBijlage[]
+  deelnemerMails       DeelnemerMail[]
 }
 
 model Registration {
@@ -42,4 +51,133 @@ model Admin {
   passwordHash String
   name         String
   createdAt    DateTime @default(now())
+}
+
+// ─── Evaluatie ───────────────────────────────────────────────────────────────
+
+/// Anoniem antwoord op evaluatieformulier A. Bevat bewust GEEN e-mailadres,
+/// IP-adres of verwijzing naar DeelnemerMail/OpvolgContact.
+model EvaluatieAntwoord {
+  id          String   @id @default(cuid())
+  activityId  String
+  activity    Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  /// Enkel de dag (00:00 UTC), zodat antwoorden niet via het tijdstip aan een
+  /// persoonlijke link te koppelen zijn.
+  createdAt   DateTime
+  formVersie  String
+  antwoorden  Json
+  kennisScore Int?
+  c1Opvolging Boolean
+
+  @@index([activityId])
+}
+
+/// E-mailadressen voor de opvolgbevraging na 3 maanden. Geen relatie met
+/// EvaluatieAntwoord; wordt automatisch gewist op verwijderOp.
+model OpvolgContact {
+  id                     String    @id @default(cuid())
+  activityId             String
+  email                  String
+  token                  String    @unique
+  aangemaaktOp           DateTime  @default(now())
+  uitnodigingVerstuurdOp DateTime?
+  ingevuldOp             DateTime?
+  verwijderOp            DateTime
+
+  @@unique([activityId, email])
+}
+
+model EvaluatieExportLog {
+  id         String   @id @default(cuid())
+  adminEmail String
+  activityId String?
+  createdAt  DateTime @default(now())
+}
+
+// ─── Mail naar deelnemers, bijlagen, downloads ───────────────────────────────
+
+enum BijlageSoort {
+  BESTAND
+  LINK
+}
+
+model ActiviteitBijlage {
+  id                String       @id @default(cuid())
+  activityId        String
+  activity          Activity     @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  soort             BijlageSoort
+  titel             String
+  bestandsnaam      String?
+  mimeType          String?
+  grootte           Int?
+  data              Bytes?
+  url               String?
+  /// Tellers die bewaard blijven nadat de e-mailadressen gewist zijn.
+  downloadsTotaal   Int          @default(0)
+  uniekeDownloaders Int          @default(0)
+  createdAt         DateTime     @default(now())
+  downloads         BijlageDownload[]
+
+  @@index([activityId])
+}
+
+/// Eén ontvanger van de deelnemersmail per activiteit.
+model DeelnemerMail {
+  id                String    @id @default(cuid())
+  activityId        String
+  activity          Activity  @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  email             String
+  naam              String?
+  bron              String
+  /// sha256 van het persoonlijke evaluatietoken; het token zelf wordt nooit bewaard.
+  evalTokenHash     String?   @unique
+  downloadToken     String    @unique
+  laatstVerstuurdOp DateTime?
+  aantalVerstuurd   Int       @default(0)
+  /// Bewust zonder tijdstip: enkel DAT er ingevuld werd.
+  evaluatieIngevuld Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  downloads         BijlageDownload[]
+
+  @@unique([activityId, email])
+}
+
+model BijlageDownload {
+  id                String            @id @default(cuid())
+  bijlageId         String
+  bijlage           ActiviteitBijlage @relation(fields: [bijlageId], references: [id], onDelete: Cascade)
+  deelnemerMailId   String
+  deelnemerMail     DeelnemerMail     @relation(fields: [deelnemerMailId], references: [id], onDelete: Cascade)
+  aantal            Int               @default(1)
+  eersteDownloadOp  DateTime          @default(now())
+  laatsteDownloadOp DateTime          @default(now())
+
+  @@unique([bijlageId, deelnemerMailId])
+}
+
+// ─── Mailinstellingen (Power Automate) ───────────────────────────────────────
+
+enum MailSoort {
+  INSCHRIJVING_BEVESTIGING
+  INSCHRIJVING_MELDING_ADMIN
+  EVALUATIE_MELDING_ADMIN
+  DEELNEMER_EVALUATIE_UITNODIGING
+}
+
+model MailInstelling {
+  soort          MailSoort @id
+  enabled        Boolean   @default(true)
+  ontvangerEmail String?
+  replyToEmail   String?
+  subject        String?
+  intro          String?
+  footerNote     String?
+  updatedAt      DateTime  @updatedAt
+}
+
+model AppSettings {
+  id                      String   @id @default("singleton")
+  powerAutomateWebhookUrl String?
+  replyToEmail            String?
+  updatedAt               DateTime @updatedAt
 }

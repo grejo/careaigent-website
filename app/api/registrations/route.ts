@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { registrationSchema } from '@/lib/validation';
-import { sendConfirmationEmail } from '@/lib/email';
+import { sendInschrijvingBevestiging, sendInschrijvingMelding } from '@/lib/mail';
 
 export async function POST(req: Request) {
   let body: unknown;
@@ -33,11 +33,11 @@ export async function POST(req: Request) {
     include: { _count: { select: { registrations: true } } },
   });
 
-  if (!activity) {
+  if (!activity || activity.isHidden) {
     return NextResponse.json({ error: 'Activiteit niet gevonden' }, { status: 404 });
   }
 
-  if (!activity.isOpen) {
+  if (!activity.isOpen || (activity.dateEnd ?? activity.dateStart) < new Date()) {
     return NextResponse.json({ error: 'Inschrijvingen zijn gesloten' }, { status: 409 });
   }
 
@@ -75,9 +75,29 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Kon inschrijving niet opslaan. Probeer opnieuw.' }, { status: 500 });
   }
 
-  sendConfirmationEmail(registration, activity).catch((err) => {
-    console.error('Confirmation email failed:', err);
-  });
+  // Awaiten: op Netlify serverless kan een niet-afgewachte promise na de
+  // response afgebroken worden. sendMail gooit nooit; hooguit 5s timeout.
+  const aantalInschrijvingen = activity._count.registrations + 1;
+  const [bevestiging, melding] = await Promise.all([
+    sendInschrijvingBevestiging(registration.email, {
+      voornaam: registration.voornaam,
+      naam: registration.naam,
+      activiteit: activity,
+    }),
+    sendInschrijvingMelding({
+      voornaam: registration.voornaam,
+      naam: registration.naam,
+      email: registration.email,
+      telefoon: registration.telefoon,
+      instelling: registration.instelling,
+      functie: registration.functie,
+      activiteit: activity,
+      aantalInschrijvingen,
+      maxDeelnemers: activity.maxParticipants,
+    }),
+  ]);
+  if (!bevestiging.ok) console.warn('[registrations] Bevestiging niet verstuurd:', bevestiging.reason);
+  if (!melding.ok) console.info('[registrations] Admin-melding niet verstuurd:', melding.reason);
 
   return NextResponse.json({ success: true, id: registration.id }, { status: 201 });
 }

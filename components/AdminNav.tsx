@@ -37,6 +37,8 @@ export default function AdminNav({ signOutAction, userName }: Props) {
         <ul className="nav-links">
           <li><Link href="/admin">Dashboard</Link></li>
           <li><Link href="/admin/activiteiten">Activiteiten</Link></li>
+          <li><Link href="/admin/evaluatie">Evaluatie</Link></li>
+          <li><Link href="/admin/mail">Mail</Link></li>
           <li><Link href="/admin/gebruikers">Gebruikers</Link></li>
         </ul>
 
@@ -75,6 +77,8 @@ export default function AdminNav({ signOutAction, userName }: Props) {
       <div className={`mobile-menu${menuOpen ? ' open' : ''}`}>
         <Link href="/admin" onClick={() => setMenuOpen(false)}>Dashboard</Link>
         <Link href="/admin/activiteiten" onClick={() => setMenuOpen(false)}>Activiteiten</Link>
+        <Link href="/admin/evaluatie" onClick={() => setMenuOpen(false)}>Evaluatie</Link>
+        <Link href="/admin/mail" onClick={() => setMenuOpen(false)}>Mail</Link>
         <Link href="/admin/gebruikers" onClick={() => setMenuOpen(false)}>Gebruikers</Link>
         <Link href="/admin/profiel" onClick={() => setMenuOpen(false)}>Mijn profiel</Link>
         <form action={signOutAction}>
