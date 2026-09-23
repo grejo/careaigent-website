@@ -48,3 +48,12 @@ describe('activitySchema', () => {
     })).toThrow();
   });
 });
+
+import { activityUpdateSchema } from '../validation';
+
+describe('activityUpdateSchema', () => {
+  it('vult geen defaults in bij een gedeeltelijke update', () => {
+    const parsed = activityUpdateSchema.parse({ isOpen: false });
+    expect(parsed).toEqual({ isOpen: false });
+  });
+});

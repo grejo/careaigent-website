@@ -12,7 +12,15 @@ export const registrationSchema = z.object({
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;
 
-export const activitySchema = z.object({
+const extraFieldSchema = z.object({
+  key: z.string().min(1),
+  label: z.string().min(1),
+  type: z.enum(['text', 'textarea', 'radio', 'checkbox']),
+  options: z.array(z.string()).optional(),
+  required: z.boolean().default(false),
+});
+
+const activityFields = {
   title: z.string().min(1, 'Titel is verplicht'),
   slug: z
     .string()
@@ -24,16 +32,31 @@ export const activitySchema = z.object({
   location: z.string().optional().nullable(),
   maxParticipants: z.number().int().positive().optional().nullable(),
   registrationDeadline: z.string().optional().nullable(),
+};
+
+export const activitySchema = z.object({
+  ...activityFields,
   isOpen: z.boolean().default(true),
-  extraFields: z.array(
-    z.object({
-      key: z.string().min(1),
-      label: z.string().min(1),
-      type: z.enum(['text', 'textarea', 'radio', 'checkbox']),
-      options: z.array(z.string()).optional(),
-      required: z.boolean().default(false),
-    })
-  ).default([]),
+  isHidden: z.boolean().default(false),
+  evaluatieOpen: z.boolean().default(false),
+  evaluatieOpenLink: z.boolean().default(false),
+  extraFields: z.array(extraFieldSchema).default([]),
 });
+
+/**
+ * Voor PUT: elk veld optioneel en ZONDER defaults. `activitySchema.partial()`
+ * vult in Zod v4 de defaults toch in, waardoor een PUT met enkel `{ isOpen }`
+ * de extra velden en schakelaars zou resetten.
+ */
+export const activityUpdateSchema = z
+  .object({
+    ...activityFields,
+    isOpen: z.boolean(),
+    isHidden: z.boolean(),
+    evaluatieOpen: z.boolean(),
+    evaluatieOpenLink: z.boolean(),
+    extraFields: z.array(extraFieldSchema),
+  })
+  .partial();
 
 export type ActivityInput = z.infer<typeof activitySchema>;

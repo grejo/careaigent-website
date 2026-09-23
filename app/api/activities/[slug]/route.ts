@@ -12,7 +12,7 @@ export async function GET(
       include: { _count: { select: { registrations: true } } },
     });
 
-    if (!activity) {
+    if (!activity || activity.isHidden) {
       return NextResponse.json({ error: 'Niet gevonden' }, { status: 404 });
     }
 

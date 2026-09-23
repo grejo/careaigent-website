@@ -11,7 +11,7 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const activity = await prisma.activity.findUnique({ where: { slug } });
-  if (!activity) return { title: 'Niet gevonden' };
+  if (!activity || activity.isHidden) return { title: 'Niet gevonden' };
   return {
     title: activity.title,
     description: activity.description ?? `Schrijf u in voor ${activity.title}`,
@@ -25,12 +25,13 @@ export default async function ActivityPage({ params }: Props) {
     include: { _count: { select: { registrations: true } } },
   });
 
-  if (!activity) notFound();
+  if (!activity || activity.isHidden) notFound();
 
   const isFull =
     activity.maxParticipants !== null &&
     activity._count.registrations >= activity.maxParticipants;
-  const isClosed = !activity.isOpen;
+  const isPast = (activity.dateEnd ?? activity.dateStart) < new Date();
+  const isClosed = !activity.isOpen || isPast;
   const dateStr = activity.dateStart.toLocaleDateString('nl-BE', {
     weekday: 'long',
     year: 'numeric',
@@ -111,16 +112,18 @@ export default async function ActivityPage({ params }: Props) {
           <div className={`activity-form-card${isClosed || isFull ? ' activity-closed-card' : ''}`}>
             <div className="activity-form-card-header">
               <h2>
-                {isFull ? '🔴 Volzet' : isClosed ? '🔒 Gesloten' : 'Inschrijven'}
+                {isPast ? 'Afgelopen' : isFull ? '🔴 Volzet' : isClosed ? '🔒 Gesloten' : 'Inschrijven'}
               </h2>
             </div>
             <div className="activity-form-card-body">
               {isClosed || isFull ? (
                 <>
                   <p style={{ fontWeight: 600, marginBottom: '8px', color: 'var(--text-dark)' }}>
-                    {isFull
-                      ? 'Deze activiteit is volzet.'
-                      : 'Inschrijvingen zijn gesloten.'}
+                    {isPast
+                      ? 'Deze activiteit heeft al plaatsgevonden.'
+                      : isFull
+                        ? 'Deze activiteit is volzet.'
+                        : 'Inschrijvingen zijn gesloten.'}
                   </p>
                   <p style={{ color: 'var(--text-mid)', fontSize: '0.9rem' }}>
                     Neem contact op via{' '}

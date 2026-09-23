@@ -30,6 +30,9 @@ export default async function EditActivityPage({
           maxParticipants: activity.maxParticipants,
           registrationDeadline: activity.registrationDeadline?.toISOString() ?? null,
           isOpen: activity.isOpen,
+          isHidden: activity.isHidden,
+          evaluatieOpen: activity.evaluatieOpen,
+          evaluatieOpenLink: activity.evaluatieOpenLink,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           extraFields: (Array.isArray(activity.extraFields) ? activity.extraFields : []) as any,
         }}

@@ -1,4 +1,4 @@
-import { generateIcal } from '../email';
+import { generateIcal } from '../ical';
 
 const mockActivity = {
   id: 'act-1',

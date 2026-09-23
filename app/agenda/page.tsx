@@ -17,7 +17,7 @@ export const revalidate = 0;
 async function getActivities() {
   try {
     return await prisma.activity.findMany({
-      where: { isOpen: true },
+      where: { isHidden: false },
       orderBy: { dateStart: 'asc' },
       include: { _count: { select: { registrations: true } } },
     });

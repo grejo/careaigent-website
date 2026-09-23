@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/db';
-import { activitySchema } from '@/lib/validation';
+import { activityUpdateSchema } from '@/lib/validation';
 
 export async function PUT(
   req: Request,
@@ -19,7 +19,7 @@ export async function PUT(
     return NextResponse.json({ error: 'Ongeldige JSON' }, { status: 400 });
   }
 
-  const parsed = activitySchema.partial().safeParse(body);
+  const parsed = activityUpdateSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 422 });
   }

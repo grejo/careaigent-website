@@ -21,6 +21,9 @@ type ActivityData = {
   maxParticipants?: number | null;
   registrationDeadline?: string | null;
   isOpen?: boolean;
+  isHidden?: boolean;
+  evaluatieOpen?: boolean;
+  evaluatieOpenLink?: boolean;
   extraFields?: ExtraField[];
 };
 
@@ -67,6 +70,9 @@ export default function ActivityForm({ activity }: Props) {
       maxParticipants: maxP ? parseInt(maxP as string, 10) : null,
       registrationDeadline: formData.get('registrationDeadline') || null,
       isOpen: formData.get('isOpen') === 'true',
+      isHidden: formData.get('isHidden') === 'on',
+      evaluatieOpen: formData.get('evaluatieOpen') === 'on',
+      evaluatieOpenLink: formData.get('evaluatieOpenLink') === 'on',
       extraFields,
     };
 
@@ -198,6 +204,21 @@ export default function ActivityForm({ activity }: Props) {
           <option value="true">Open</option>
           <option value="false">Gesloten</option>
         </select>
+      </div>
+
+      <div className="form-group">
+        <label className="radio-label">
+          <input type="checkbox" name="isHidden" defaultChecked={activity?.isHidden ?? false} />
+          Verbergen van de publieke site (agenda en detailpagina)
+        </label>
+        <label className="radio-label">
+          <input type="checkbox" name="evaluatieOpen" defaultChecked={activity?.evaluatieOpen ?? false} />
+          Evaluatieformulier open
+        </label>
+        <label className="radio-label">
+          <input type="checkbox" name="evaluatieOpenLink" defaultChecked={activity?.evaluatieOpenLink ?? false} />
+          Algemene evaluatielink / QR-code toelaten (naast de persoonlijke links)
+        </label>
       </div>
 
       <div style={{ marginBottom: '24px' }}>

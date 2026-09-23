@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const activities = await prisma.activity.findMany({
-      where: { isOpen: true },
+      where: { isHidden: false },
       orderBy: { dateStart: 'asc' },
       select: {
         id: true,
