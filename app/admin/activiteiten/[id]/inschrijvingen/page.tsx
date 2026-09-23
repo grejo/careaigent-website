@@ -68,6 +68,10 @@ export default async function InschrijvingenPage({ params }: { params: Promise<{
               {activity.evaluatieOpen ? '🟢 open' : 'gesloten'} ·{' '}
               <Link href={`/admin/evaluatie?activiteit=${id}`} style={{ color: 'var(--teal)' }}>
                 resultaten bekijken
+              </Link>{' '}
+              ·{' '}
+              <Link href={`/admin/evaluatie/voorbeeld?activiteit=${id}`} style={{ color: 'var(--teal)' }}>
+                formulier bekijken
               </Link>
             </span>
           </div>
