@@ -97,6 +97,9 @@ export default async function EvaluatieDashboard({ searchParams }: { searchParam
           </p>
         </div>
         <div className="admin-actions">
+          <Link href={`/admin/evaluatie/voorbeeld${activiteit ? `?activiteit=${activiteit}` : ''}`} className="btn-secondary">
+            Formulier bekijken
+          </Link>
           <a href={`/api/admin/evaluatie/export${activiteit ? `?activiteit=${activiteit}` : ''}`} className="btn-secondary">
             CSV-export
           </a>

@@ -60,6 +60,7 @@ export default async function DeelnemersMailPage({ params }: { params: Promise<{
         </div>
         <div className="admin-actions">
           <ToggleActivityFlagButton activityId={id} field="evaluatieOpen" value={activiteit.evaluatieOpen} />
+          <Link href={`/admin/evaluatie/voorbeeld?activiteit=${id}`} className="btn-secondary">Formulier bekijken</Link>
           <Link href={`/admin/evaluatie?activiteit=${id}`} className="btn-secondary">Resultaten evaluatie</Link>
         </div>
       </div>

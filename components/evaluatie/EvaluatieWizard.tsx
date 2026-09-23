@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SECTIES, PRIVACY_KORT, PRIVACY_LANG, PRIVACY_PERSOONLIJKE_LINK } from '@/lib/evaluatie/formulierA';
-import { valideerVragen } from '@/lib/evaluatie/validatie';
+import { valideerFormulier, valideerVragen } from '@/lib/evaluatie/validatie';
 import { VraagVeld, type Waarden } from './Vragen';
 
 type Props = {
@@ -11,6 +11,8 @@ type Props = {
   token: string | null;
   /** Slug voor de algemene link (?editie=). */
   editie: string | null;
+  /** Voorbeeldmodus voor beheerders: vrij navigeren, niets opslaan of versturen. */
+  voorbeeld?: boolean;
 };
 
 export const RESULTAAT_KEY = 'careaigent-evaluatie-resultaat';
@@ -23,7 +25,7 @@ function veilig<T>(fn: () => T, terugval: T): T {
   }
 }
 
-export default function EvaluatieWizard({ activiteit, token, editie }: Props) {
+export default function EvaluatieWizard({ activiteit, token, editie, voorbeeld = false }: Props) {
   const router = useRouter();
   const draftKey = `careaigent-evaluatie-concept:${activiteit.id}`;
   const ingevuldKey = `careaigent-evaluatie-ingevuld:${activiteit.id}`;
@@ -40,10 +42,12 @@ export default function EvaluatieWizard({ activiteit, token, editie }: Props) {
   // State (geen ref): pas na een render mét het herstelde concept mag er
   // bewaard worden, anders overschrijft de lege beginstand het concept.
   const [geladen, setGeladen] = useState(false);
+  const [voorbeeldMelding, setVoorbeeldMelding] = useState<string | null>(null);
 
   // Concept herstellen (bv. na per ongeluk herladen) en waarschuwen als er op
   // dit toestel al ingevuld werd. Enkel een waarschuwing, geen blokkering.
   useEffect(() => {
+    if (voorbeeld) return;
     const concept = veilig(() => sessionStorage.getItem(draftKey), null);
     if (concept) {
       const c = veilig(() => JSON.parse(concept) as { waarden: Waarden; stap: number }, null);
@@ -54,7 +58,7 @@ export default function EvaluatieWizard({ activiteit, token, editie }: Props) {
     }
     if (!token) setAlIngevuld(veilig(() => localStorage.getItem(ingevuldKey) === '1', false));
     setGeladen(true);
-  }, [draftKey, ingevuldKey, token]);
+  }, [draftKey, ingevuldKey, token, voorbeeld]);
 
   // Het e-mailadres wordt bewust niet in het concept bewaard.
   useEffect(() => {
@@ -106,6 +110,15 @@ export default function EvaluatieWizard({ activiteit, token, editie }: Props) {
 
   async function verzend() {
     if (!controleerStap()) return;
+    if (voorbeeld) {
+      const alles = valideerFormulier({ antwoorden: waarden, email });
+      setVoorbeeldMelding(
+        alles.ok
+          ? 'Voorbeeld: het formulier is volledig en geldig. Er werd niets opgeslagen of verstuurd.'
+          : `Voorbeeld: nog ${Object.keys(alles.fouten).length} verplichte vraag/vragen open (${Object.keys(alles.fouten).join(', ')}). Er werd niets opgeslagen.`,
+      );
+      return;
+    }
     setBezig(true);
     setAlgemeneFout(null);
     const res = await fetch('/api/evaluatie', {
@@ -143,6 +156,30 @@ export default function EvaluatieWizard({ activiteit, token, editie }: Props) {
 
   return (
     <div className="eval-card" ref={bovenkant} style={{ scrollMarginTop: '90px' }}>
+      {voorbeeld && (
+        <div className="eval-melding info" style={{ marginTop: 0 }}>
+          <strong>Voorbeeld voor beheerders.</strong> Je ziet het formulier zoals deelnemers het zien. Je kan vrij
+          tussen de stappen springen; niets wordt opgeslagen.
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '10px' }}>
+            {SECTIES.map((s, i) => (
+              <button
+                key={s.id}
+                type="button"
+                className="eval-knop-terug"
+                style={{ padding: '6px 10px', fontSize: '0.8rem', minHeight: 0, borderColor: i === stap ? 'var(--teal)' : undefined }}
+                aria-current={i === stap ? 'step' : undefined}
+                onClick={() => {
+                  setFouten({});
+                  setVoorbeeldMelding(null);
+                  naarStap(i);
+                }}
+              >
+                {i + 1}. {s.titel}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       <div className="eval-kop">
         <div className="eval-eyebrow">Evaluatie · {activiteit.datum}</div>
         <h1>{activiteit.title}</h1>
@@ -191,7 +228,7 @@ export default function EvaluatieWizard({ activiteit, token, editie }: Props) {
         onSubmit={(e) => {
           e.preventDefault();
           if (laatste) verzend();
-          else if (controleerStap()) naarStap(stap + 1);
+          else if (voorbeeld || controleerStap()) naarStap(stap + 1);
         }}
         noValidate
       >
@@ -229,6 +266,7 @@ export default function EvaluatieWizard({ activiteit, token, editie }: Props) {
           </label>
         </div>
 
+        {voorbeeldMelding && <p className="eval-melding info">{voorbeeldMelding}</p>}
         {algemeneFout && (
           <p className="eval-melding fout" role="alert">
             {algemeneFout}
