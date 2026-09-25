@@ -43,12 +43,20 @@ describe('MAIL_REGISTRY', () => {
     expect(html).not.toMatch(/[\w.-]+@[\w.-]+\.\w+/);
   });
 
-  it('deelnemersmail toont evaluatieknop en downloadknoppen', () => {
+  it('deelnemersmail toont evaluatieknop en één handoutknop met de documentenlijst', () => {
     const def = MAIL_REGISTRY.DEELNEMER_EVALUATIE_UITNODIGING;
     const { html } = def.build(def.voorbeeldContext());
     expect(html).toContain('Vul de evaluatie in');
-    expect(html).toContain('Slides AI-Ambassadeur');
-    expect(html).toContain('/d/voorbeeld/voorbeeld');
+    expect(html.match(/Download de handouts/g)).toHaveLength(1);
+    expect(html).toContain('/d/voorbeeld"');
+    expect(html).toContain('<li>Slides AI-Ambassadeur (pdf)</li>');
+    expect(html).toContain('<li>Werkblad prompts (docx)</li>');
+  });
+
+  it('deelnemersmail zonder bijlagen heeft geen handoutknop', () => {
+    const def = MAIL_REGISTRY.DEELNEMER_EVALUATIE_UITNODIGING;
+    const { html } = def.build({ ...def.voorbeeldContext(), handouts: null });
+    expect(html).not.toContain('Download de handouts');
   });
 
   it('bevestiging voegt een .ics-bijlage toe', () => {

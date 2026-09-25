@@ -5,6 +5,7 @@ import { KENNIS_CORRECT } from '@/lib/evaluatie/kennischeck.server';
 import { ruimVerlopenContactenOp } from '@/lib/evaluatie/opslag';
 import type { Antwoorden } from '@/lib/evaluatie/formulierA';
 import OpenAntwoorden from './OpenAntwoorden';
+import TestAntwoorden from './TestAntwoorden';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,27 +55,40 @@ export default async function EvaluatieDashboard({ searchParams }: { searchParam
   const { activiteit } = await searchParams;
   await ruimVerlopenContactenOp();
 
-  const [activiteiten, rijen, opvolgContacten, uitnodigingen] = await Promise.all([
+  // Testantwoorden en testontvangers (beheerders) tellen nergens mee.
+  const [activiteiten, rijen, opvolgContacten, uitnodigingen, testRijen] = await Promise.all([
     prisma.activity.findMany({
-      where: { OR: [{ evaluatieOpen: true }, { evaluaties: { some: {} } }] },
+      where: { OR: [{ evaluatieOpen: true }, { evaluaties: { some: { isTest: false } } }] },
       orderBy: { dateStart: 'desc' },
       select: {
         id: true,
         title: true,
         dateStart: true,
         evaluatieOpen: true,
-        _count: { select: { evaluaties: true, registrations: true } },
+        _count: { select: { evaluaties: { where: { isTest: false } }, registrations: true } },
       },
     }),
     prisma.evaluatieAntwoord.findMany({
-      where: activiteit ? { activityId: activiteit } : {},
+      where: { isTest: false, ...(activiteit ? { activityId: activiteit } : {}) },
       select: { id: true, antwoorden: true, kennisScore: true, c1Opvolging: true },
     }),
     prisma.opvolgContact.count({ where: activiteit ? { activityId: activiteit } : {} }),
     prisma.deelnemerMail.groupBy({
       by: ['evaluatieIngevuld'],
-      where: { aantalVerstuurd: { gt: 0 }, ...(activiteit ? { activityId: activiteit } : {}) },
+      where: { aantalVerstuurd: { gt: 0 }, isTest: false, ...(activiteit ? { activityId: activiteit } : {}) },
       _count: true,
+    }),
+    prisma.evaluatieAntwoord.findMany({
+      where: { isTest: true, ...(activiteit ? { activityId: activiteit } : {}) },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        createdAt: true,
+        antwoorden: true,
+        kennisScore: true,
+        c1Opvolging: true,
+        activity: { select: { id: true, title: true } },
+      },
     }),
   ]);
 
@@ -257,6 +271,21 @@ export default async function EvaluatieDashboard({ searchParams }: { searchParam
             <OpenAntwoorden blokken={stats.open} />
           </div>
         </div>
+      )}
+
+      {testRijen.length > 0 && (
+        <TestAntwoorden
+          activiteit={activiteit ?? null}
+          rijen={testRijen.map((r) => ({
+            id: r.id,
+            datum: r.createdAt.toLocaleDateString('nl-BE'),
+            activiteit: r.activity.title,
+            activityId: r.activity.id,
+            antwoorden: r.antwoorden as Antwoorden,
+            kennisScore: r.kennisScore,
+            c1Opvolging: r.c1Opvolging,
+          }))}
+        />
       )}
     </div>
   );

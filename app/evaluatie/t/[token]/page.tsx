@@ -15,6 +15,7 @@ export default async function PersoonlijkeEvaluatiePage({ params }: { params: Pr
       activiteit={{ id: a.id, title: a.title, datum: datumLabel(a.dateStart) }}
       token={token}
       editie={null}
+      test={toegang.isTest}
     />
   );
 }

@@ -68,8 +68,10 @@ model EvaluatieAntwoord {
   antwoorden  Json
   kennisScore Int?
   c1Opvolging Boolean
+  /// Testantwoord van een beheerder: telt nergens mee in statistieken of export.
+  isTest      Boolean  @default(false)
 
-  @@index([activityId])
+  @@index([activityId, isTest])
 }
 
 /// E-mailadressen voor de opvolgbevraging na 3 maanden. Geen relatie met
@@ -136,6 +138,10 @@ model DeelnemerMail {
   aantalVerstuurd   Int       @default(0)
   /// Bewust zonder tijdstip: enkel DAT er ingevuld werd.
   evaluatieIngevuld Boolean   @default(false)
+  /// Echte testmail van een beheerder naar zichzelf: telt nergens mee.
+  isTest            Boolean   @default(false)
+  /// Bijlagen die deze ontvanger ooit kreeg; bepaalt de inhoud van de handoutpagina.
+  bijlageIds        String[]  @default([])
   createdAt         DateTime  @default(now())
   downloads         BijlageDownload[]
 

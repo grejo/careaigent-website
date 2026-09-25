@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { auth } from '@/auth';
 import { prisma } from '@/lib/db';
 import { bijlagenMetTellers } from '@/lib/bijlagen';
 import ToggleActivityFlagButton from '@/components/admin/ToggleActivityFlagButton';
@@ -12,16 +13,21 @@ export default async function DeelnemersMailPage({ params }: { params: Promise<{
   const activiteit = await prisma.activity.findUnique({ where: { id } });
   if (!activiteit) notFound();
 
-  const [inschrijvingen, deelnemerMails, bijlagen] = await Promise.all([
+  const session = await auth();
+  const [inschrijvingen, deelnemerMails, testMail, bijlagen] = await Promise.all([
     prisma.registration.findMany({
       where: { activityId: id },
       orderBy: [{ naam: 'asc' }, { voornaam: 'asc' }],
       select: { voornaam: true, naam: true, email: true },
     }),
     prisma.deelnemerMail.findMany({
-      where: { activityId: id },
+      where: { activityId: id, isTest: false },
       orderBy: { email: 'asc' },
       select: { id: true, email: true, naam: true, bron: true, aantalVerstuurd: true, laatstVerstuurdOp: true, evaluatieIngevuld: true },
+    }),
+    prisma.deelnemerMail.findFirst({
+      where: { activityId: id, isTest: true },
+      select: { id: true, email: true, laatstVerstuurdOp: true, evaluatieIngevuld: true },
     }),
     bijlagenMetTellers(id),
   ]);
@@ -37,6 +43,19 @@ export default async function DeelnemersMailPage({ params }: { params: Promise<{
         bijlagen.map((b) => [b.id, b.downloads.find((x) => x.deelnemerMailId === d.id)?.aantal ?? 0]),
       ),
     })),
+    test: {
+      mijnEmail: session?.user?.email ?? null,
+      ontvanger: testMail
+        ? {
+            email: testMail.email,
+            laatstVerstuurdOp: testMail.laatstVerstuurdOp?.toISOString() ?? null,
+            evaluatieIngevuld: testMail.evaluatieIngevuld,
+            downloads: Object.fromEntries(
+              bijlagen.map((b) => [b.id, b.testDownloads.find((x) => x.deelnemerMailId === testMail.id)?.aantal ?? 0]),
+            ),
+          }
+        : null,
+    },
     bijlagen: bijlagen.map((b) => ({
       id: b.id,
       soort: b.soort,

@@ -50,6 +50,28 @@ describe('sendMail', () => {
     expect(body.subject).toBe('Eigen: An');
   });
 
+  it('testmodus zonder overrides gebruikt de opgeslagen teksten, ook als de mailsoort uit staat', async () => {
+    mailInstelling.findUnique.mockResolvedValue({ enabled: false, subject: 'Handouts voor {voornaam}' });
+    const def = MAIL_REGISTRY.DEELNEMER_EVALUATIE_UITNODIGING;
+    const res = await sendMail(MailSoort.DEELNEMER_EVALUATIE_UITNODIGING, def.voorbeeldContext(), {
+      test: { naar: { email: 'admin@pxl.be', naam: 'Admin' } },
+    });
+    expect(res.ok).toBe(true);
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(body.subject).toBe('[TEST] Handouts voor An');
+    expect(body.ontvangers).toEqual([{ email: 'admin@pxl.be', naam: 'Admin' }]);
+    expect(body.context.test).toBe(true);
+  });
+
+  it('alsTest zet [TEST] voor het onderwerp van een gewone verzending', async () => {
+    mailInstelling.findUnique.mockResolvedValue({ enabled: true, ontvangerEmail: 'team@pxl.be' });
+    const def = MAIL_REGISTRY.EVALUATIE_MELDING_ADMIN;
+    await sendMail(MailSoort.EVALUATIE_MELDING_ADMIN, def.voorbeeldContext(), { alsTest: true });
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(body.subject).toMatch(/^\[TEST\] Nieuwe evaluatie/);
+    expect(body.ontvangers[0].email).toBe('team@pxl.be');
+  });
+
   it('faalt zacht bij een webhookfout', async () => {
     fetchMock.mockResolvedValue({ ok: false, status: 500, text: async () => 'kapot' });
     const ctx = MAIL_REGISTRY.INSCHRIJVING_BEVESTIGING.voorbeeldContext();

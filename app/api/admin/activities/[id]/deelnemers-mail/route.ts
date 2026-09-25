@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/db';
-import { sendDeelnemerUitnodiging } from '@/lib/mail';
-import { hashToken, nieuwToken } from '@/lib/tokens';
-import { siteUrl } from '@/lib/site';
-import { downloadKnoppen, gekozenBijlagen, verzendSchema, voornaamVan } from '@/lib/deelnemerMail';
+import { nieuwToken } from '@/lib/tokens';
+import { gekozenBijlagen, verstuurNaarDeelnemer, verzendSchema } from '@/lib/deelnemerMail';
 import { eersteFout } from '@/lib/mailSchemas';
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -37,41 +35,20 @@ export async function POST(req: Request, context: Ctx) {
   const resultaten: { email: string; ok: boolean; reason?: string }[] = [];
 
   for (const o of ontvangers) {
+    const bestaand = await prisma.deelnemerMail.findUnique({
+      where: { activityId_email: { activityId: id, email: o.email } },
+      select: { isTest: true },
+    });
+    if (bestaand?.isTest) {
+      resultaten.push({ email: o.email, ok: false, reason: 'Dit adres wordt gebruikt voor de testmail. Wis eerst de test.' });
+      continue;
+    }
     const dm = await prisma.deelnemerMail.upsert({
       where: { activityId_email: { activityId: id, email: o.email } },
       create: { activityId: id, email: o.email, naam: o.naam || null, bron: o.bron, downloadToken: nieuwToken() },
       update: o.naam ? { naam: o.naam } : {},
     });
-
-    // Wie al invulde, krijgt geen nieuwe evaluatielink (wel de documenten).
-    const evalLink = metEvaluatie && !dm.evaluatieIngevuld;
-    if (!evalLink && bijlagen.length === 0) {
-      resultaten.push({ email: o.email, ok: false, reason: 'Evaluatie al ingevuld' });
-      continue;
-    }
-    const token = evalLink ? nieuwToken() : null;
-
-    const res = await sendDeelnemerUitnodiging(
-      { email: o.email, naam: dm.naam ?? '' },
-      {
-        voornaam: voornaamVan(dm.naam),
-        activiteit: activiteit,
-        evaluatieUrl: token ? `${siteUrl()}/evaluatie/t/${token}` : null,
-        downloads: downloadKnoppen(dm.downloadToken, bijlagen),
-      },
-    );
-
-    if (res.ok) {
-      await prisma.deelnemerMail.update({
-        where: { id: dm.id },
-        data: {
-          laatstVerstuurdOp: new Date(),
-          aantalVerstuurd: { increment: 1 },
-          // Nieuw token vervangt het vorige: oudere links werken niet meer.
-          ...(token ? { evalTokenHash: hashToken(token) } : {}),
-        },
-      });
-    }
+    const res = await verstuurNaarDeelnemer(dm, activiteit, bijlagen, metEvaluatie);
     resultaten.push({ email: o.email, ok: res.ok, reason: res.reason });
   }
 
@@ -90,7 +67,8 @@ export async function DELETE(_req: Request, context: Ctx) {
   await prisma.$transaction(async (tx) => {
     const bijlagen = await tx.activiteitBijlage.findMany({
       where: { activityId: id },
-      select: { id: true, downloads: { select: { aantal: true } } },
+      // Downloads van de testmail tellen niet mee in de bewaarde totalen.
+      select: { id: true, downloads: { where: { deelnemerMail: { isTest: false } }, select: { aantal: true } } },
     });
     for (const b of bijlagen) {
       if (b.downloads.length === 0) continue;

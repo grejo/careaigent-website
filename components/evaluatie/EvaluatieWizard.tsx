@@ -13,6 +13,8 @@ type Props = {
   editie: string | null;
   /** Voorbeeldmodus voor beheerders: vrij navigeren, niets opslaan of versturen. */
   voorbeeld?: boolean;
+  /** Testlink van een beheerder: alles werkt echt, maar het antwoord telt niet mee. */
+  test?: boolean;
 };
 
 export const RESULTAAT_KEY = 'careaigent-evaluatie-resultaat';
@@ -25,7 +27,7 @@ function veilig<T>(fn: () => T, terugval: T): T {
   }
 }
 
-export default function EvaluatieWizard({ activiteit, token, editie, voorbeeld = false }: Props) {
+export default function EvaluatieWizard({ activiteit, token, editie, voorbeeld = false, test = false }: Props) {
   const router = useRouter();
   const draftKey = `careaigent-evaluatie-concept:${activiteit.id}`;
   const ingevuldKey = `careaigent-evaluatie-ingevuld:${activiteit.id}`;
@@ -156,6 +158,12 @@ export default function EvaluatieWizard({ activiteit, token, editie, voorbeeld =
 
   return (
     <div className="eval-card" ref={bovenkant} style={{ scrollMarginTop: '90px' }}>
+      {test && (
+        <div className="eval-melding info" style={{ marginTop: 0 }}>
+          <strong>Testlink.</strong> Je antwoord wordt echt opgeslagen, maar als test: het telt niet mee in de
+          statistieken en de export. Je vindt het terug onder Admin › Evaluatie › Testantwoorden.
+        </div>
+      )}
       {voorbeeld && (
         <div className="eval-melding info" style={{ marginTop: 0 }}>
           <strong>Voorbeeld voor beheerders.</strong> Je ziet het formulier zoals deelnemers het zien. Je kan vrij

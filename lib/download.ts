@@ -22,3 +22,21 @@ export async function registreerDownload(bijlageId: string, deelnemerMailId: str
     update: { aantal: { increment: 1 }, laatsteDownloadOp: new Date() },
   });
 }
+
+/** Handoutpagina: activiteit + de bijlagen die deze ontvanger kreeg (die nog bestaan). Telt niets. */
+export async function vindHandouts(token: string) {
+  if (!isTokenVorm(token)) return null;
+  const dm = await prisma.deelnemerMail.findUnique({
+    where: { downloadToken: token },
+    select: { activityId: true, bijlageIds: true, activity: { select: { title: true } } },
+  });
+  if (!dm || dm.bijlageIds.length === 0) return null;
+  const rijen = await prisma.activiteitBijlage.findMany({
+    where: { activityId: dm.activityId, id: { in: dm.bijlageIds } },
+    select: { id: true, soort: true, titel: true, mimeType: true, grootte: true },
+  });
+  // Volgorde zoals verstuurd.
+  const bijlagen = dm.bijlageIds.map((id) => rijen.find((r) => r.id === id)).filter((r) => r !== undefined);
+  if (bijlagen.length === 0) return null;
+  return { activiteit: dm.activity.title, bijlagen };
+}

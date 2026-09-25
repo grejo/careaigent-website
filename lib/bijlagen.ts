@@ -45,13 +45,19 @@ export async function bijlagenMetTellers(activityId: string) {
       downloadsTotaal: true,
       uniekeDownloaders: true,
       createdAt: true,
-      downloads: { select: { aantal: true, deelnemerMailId: true } },
+      downloads: { select: { aantal: true, deelnemerMailId: true, deelnemerMail: { select: { isTest: true } } } },
     },
   });
-  return bijlagen.map(({ downloads, ...b }) => ({
-    ...b,
-    uniek: b.uniekeDownloaders + downloads.length,
-    totaal: b.downloadsTotaal + downloads.reduce((s, d) => s + d.aantal, 0),
-    downloads,
-  }));
+  return bijlagen.map(({ downloads: alle, ...b }) => {
+    // Downloads via de testmail van een beheerder tellen niet mee.
+    const downloads = alle.filter((d) => !d.deelnemerMail.isTest).map(({ aantal, deelnemerMailId }) => ({ aantal, deelnemerMailId }));
+    const testDownloads = alle.filter((d) => d.deelnemerMail.isTest).map(({ aantal, deelnemerMailId }) => ({ aantal, deelnemerMailId }));
+    return {
+      ...b,
+      uniek: b.uniekeDownloaders + downloads.length,
+      totaal: b.downloadsTotaal + downloads.reduce((s, d) => s + d.aantal, 0),
+      downloads,
+      testDownloads,
+    };
+  });
 }

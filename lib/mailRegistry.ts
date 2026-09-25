@@ -9,7 +9,6 @@ import {
   resolveTeksten,
   formatDatum,
   formatUur,
-  type EmailKnop,
   type MailStandaardTeksten,
   type MailTekstOverrides,
 } from './emailTemplate';
@@ -54,8 +53,11 @@ export type DeelnemerUitnodigingContext = {
   activiteit: ActiviteitInfo;
   /** Persoonlijke evaluatielink, of null als die niet meegestuurd wordt. */
   evaluatieUrl: string | null;
-  downloads: EmailKnop[];
+  /** Persoonlijke handoutpagina met alle documenten, of null zonder bijlagen. */
+  handouts: Handouts | null;
 };
+
+export type Handouts = { url: string; titels: string[] };
 
 export type MailContextMap = {
   INSCHRIJVING_BEVESTIGING: InschrijvingBevestigingContext;
@@ -239,8 +241,9 @@ function buildUitnodiging(ctx: DeelnemerUitnodigingContext, overrides?: MailTeks
     intro: t.intro,
     ctaLabel: ctx.evaluatieUrl ? 'Vul de evaluatie in' : undefined,
     ctaUrl: ctx.evaluatieUrl ?? undefined,
-    knoppenTitel: ctx.downloads.length > 0 ? 'Documenten om te downloaden' : undefined,
-    knoppen: ctx.downloads,
+    knoppenTitel: ctx.handouts ? 'Documenten om te downloaden' : undefined,
+    knoppen: ctx.handouts ? [{ label: 'Download de handouts', url: ctx.handouts.url }] : [],
+    knoppenLijst: ctx.handouts?.titels,
     footerNote: t.footerNote,
   });
 }
@@ -336,7 +339,7 @@ export const MAIL_REGISTRY: { [S in MailSoort]: MailSoortDefinitie<S> } = {
     soort: MailSoort.DEELNEMER_EVALUATIE_UITNODIGING,
     label: 'Mail naar deelnemers (evaluatie en documenten)',
     beschrijving:
-      'Verstuurd vanuit Activiteiten › Mail naar deelnemers. Bevat de persoonlijke evaluatielink en/of downloadknoppen.',
+      'Verstuurd vanuit Activiteiten › Mail naar deelnemers. Bevat de persoonlijke evaluatielink en/of een knop naar de handoutpagina.',
     ontvangersUitleg: 'De deelnemers die je op dat scherm bevestigt of manueel toevoegt.',
     ontvangerModus: 'CONTEXT',
     replyToModus: 'INSTELBAAR',
@@ -353,13 +356,16 @@ export const MAIL_REGISTRY: { [S in MailSoort]: MailSoortDefinitie<S> } = {
       voornaam: 'An',
       activiteit: voorbeeldActiviteit(),
       evaluatieUrl: `${siteUrl()}/evaluatie/t/voorbeeldtoken`,
-      downloads: [{ label: 'Slides AI-Ambassadeur (pdf)', url: `${siteUrl()}/d/voorbeeld/voorbeeld` }],
+      handouts: {
+        url: `${siteUrl()}/d/voorbeeld`,
+        titels: ['Slides AI-Ambassadeur (pdf)', 'Werkblad prompts (docx)'],
+      },
     }),
     payloadContext: (ctx) => ({
       type: MailSoort.DEELNEMER_EVALUATIE_UITNODIGING,
       activiteit: ctx.activiteit.title,
       evaluatie: Boolean(ctx.evaluatieUrl),
-      downloads: ctx.downloads.length,
+      downloads: ctx.handouts?.titels.length ?? 0,
     }),
   },
 };

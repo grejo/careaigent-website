@@ -34,6 +34,8 @@ export type EmailContent = {
   /** Extra (secundaire) knoppen onder de hoofdknop, bv. downloads. */
   knoppenTitel?: string;
   knoppen?: EmailKnop[];
+  /** Korte opsomming onder de knoppen, bv. welke documenten op de handoutpagina staan. */
+  knoppenLijst?: string[];
   footerNote?: string;
 };
 
@@ -102,6 +104,12 @@ export function renderEmail(c: EmailContent): { subject: string; html: string } 
           )
           .join('')}`
       : '';
+  const knoppenLijst =
+    c.knoppenLijst && c.knoppenLijst.length > 0
+      ? `<ul style="margin:4px 0 0;padding-left:20px;font-size:14px;line-height:1.6;color:${TEKST};">${c.knoppenLijst
+          .map((t) => `<li>${escapeHtml(t)}</li>`)
+          .join('')}</ul>`
+      : '';
   const footerNote = escapeHtml(
     c.footerNote || 'Dit is een automatisch bericht van CareAIgent – PXL Zorginnovatie.',
   ).replace(/\n/g, '<br>');
@@ -126,6 +134,7 @@ export function renderEmail(c: EmailContent): { subject: string; html: string } 
       ${feedbackBox}
       ${cta}
       ${knoppen}
+      ${knoppenLijst}
     </td></tr>
     <tr><td style="border-top:1px solid ${RAND};padding:20px 32px;">
       <p style="font-size:12px;line-height:1.5;color:${MUTED};margin:0;">${footerNote}</p>
