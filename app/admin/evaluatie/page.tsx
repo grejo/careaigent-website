@@ -65,7 +65,9 @@ export default async function EvaluatieDashboard({ searchParams }: { searchParam
         title: true,
         dateStart: true,
         evaluatieOpen: true,
-        _count: { select: { evaluaties: { where: { isTest: false } }, registrations: true } },
+        _count: {
+          select: { evaluaties: { where: { isTest: false } }, registrations: { where: { nietDeelgenomen: false } } },
+        },
       },
     }),
     prisma.evaluatieAntwoord.findMany({
@@ -143,7 +145,7 @@ export default async function EvaluatieDashboard({ searchParams }: { searchParam
             <span className="admin-stat-number">{stats.n}</span>
             <span className="admin-stat-label">
               evaluaties
-              {inschrijvingen ? ` · ${Math.round((stats.n / inschrijvingen) * 100)}% van ${inschrijvingen} inschrijvingen` : ''}
+              {inschrijvingen ? ` · ${Math.round((stats.n / inschrijvingen) * 100)}% van ${inschrijvingen} deelnemers` : ''}
             </span>
           </div>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import NietDeelgenomenButton from '@/components/admin/NietDeelgenomenButton';
 
 type Bijlage = {
   id: string;
@@ -27,7 +28,7 @@ type Deelnemer = {
 export type ClientData = {
   activityId: string;
   evaluatieOpen: boolean;
-  inschrijvingen: { email: string; naam: string }[];
+  inschrijvingen: { id: string; email: string; naam: string; nietDeelgenomen: boolean }[];
   deelnemers: Deelnemer[];
   bijlagen: Bijlage[];
   /** Echte testmail naar de ingelogde beheerder; telt nergens mee. */
@@ -47,6 +48,8 @@ type Rij = {
   naam: string | null;
   bron: 'INSCHRIJVING' | 'MANUEEL';
   deelnemer: Deelnemer | null;
+  /** Inschrijving bij dit adres (voor "niet deelgenomen"), of null bij een manueel adres. */
+  inschrijving: { id: string; nietDeelgenomen: boolean } | null;
 };
 
 type Melding = { kind: 'ok' | 'err' | 'warn'; text: string } | null;
@@ -68,7 +71,15 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
   const rijen: Rij[] = useMemo(() => {
     const perEmail = new Map<string, Rij>();
     for (const i of data.inschrijvingen) {
-      if (!perEmail.has(i.email)) perEmail.set(i.email, { email: i.email, naam: i.naam, bron: 'INSCHRIJVING', deelnemer: null });
+      if (!perEmail.has(i.email)) {
+        perEmail.set(i.email, {
+          email: i.email,
+          naam: i.naam,
+          bron: 'INSCHRIJVING',
+          deelnemer: null,
+          inschrijving: { id: i.id, nietDeelgenomen: i.nietDeelgenomen },
+        });
+      }
     }
     for (const d of data.deelnemers) {
       const bestaand = perEmail.get(d.email);
@@ -77,15 +88,31 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
         naam: bestaand?.naam ?? d.naam,
         bron: bestaand?.bron ?? (d.bron === 'INSCHRIJVING' ? 'INSCHRIJVING' : 'MANUEEL'),
         deelnemer: d,
+        inschrijving: bestaand?.inschrijving ?? null,
       });
     }
     for (const r of extraRijen) if (!perEmail.has(r.email)) perEmail.set(r.email, r);
     return Array.from(perEmail.values());
   }, [data.inschrijvingen, data.deelnemers, extraRijen]);
 
+  const afwezig = (email: string) => rijen.some((r) => r.email === email && r.inschrijving?.nietDeelgenomen);
   const [geselecteerd, setGeselecteerd] = useState<Set<string>>(
-    () => new Set(data.inschrijvingen.map((i) => i.email).filter((e) => !data.deelnemers.some((d) => d.email === e))),
+    () =>
+      new Set(
+        data.inschrijvingen
+          .filter((i) => !i.nietDeelgenomen)
+          .map((i) => i.email)
+          .filter((e) => !data.deelnemers.some((d) => d.email === e)),
+      ),
   );
+  // Wie op "niet deelgenomen" gezet wordt, gaat meteen uit de selectie.
+  useEffect(() => {
+    setGeselecteerd((s) => {
+      const n = new Set(Array.from(s).filter((e) => !afwezig(e)));
+      return n.size === s.size ? s : n;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rijen]);
   const [extraTekst, setExtraTekst] = useState('');
   const [extraMelding, setExtraMelding] = useState<Melding>(null);
 
@@ -106,7 +133,10 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
     const ongeldig = kandidaten.filter((e) => !EMAIL_RE.test(e));
     const geldig = Array.from(new Set(kandidaten.filter((e) => EMAIL_RE.test(e))));
     const nieuw = geldig.filter((e) => !rijen.some((r) => r.email === e));
-    setExtraRijen((r) => [...r, ...nieuw.map((email) => ({ email, naam: null, bron: 'MANUEEL' as const, deelnemer: null }))]);
+    setExtraRijen((r) => [
+      ...r,
+      ...nieuw.map((email) => ({ email, naam: null, bron: 'MANUEEL' as const, deelnemer: null, inschrijving: null })),
+    ]);
     setGeselecteerd((s) => new Set([...Array.from(s), ...geldig]));
     setExtraTekst(ongeldig.join('\n'));
     setExtraMelding(
@@ -143,7 +173,7 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
   const [resultaten, setResultaten] = useState<Record<string, { ok: boolean; reason?: string }>>({});
   const [verzendMelding, setVerzendMelding] = useState<Melding>(null);
 
-  const ontvangers = rijen.filter((r) => geselecteerd.has(r.email));
+  const ontvangers = rijen.filter((r) => geselecteerd.has(r.email) && !r.inschrijving?.nietDeelgenomen);
 
   async function verstuur() {
     if (ontvangers.length === 0) return;
@@ -305,7 +335,9 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
   const gemaild = data.deelnemers.filter((d) => d.aantalVerstuurd > 0);
   const ingevuld = gemaild.filter((d) => d.evaluatieIngevuld).length;
 
-  const selecteer = (filter: (r: Rij) => boolean) => setGeselecteerd(new Set(rijen.filter(filter).map((r) => r.email)));
+  // Snelkeuzes slaan wie niet deelnam altijd over.
+  const selecteer = (filter: (r: Rij) => boolean) =>
+    setGeselecteerd(new Set(rijen.filter((r) => !r.inschrijving?.nietDeelgenomen && filter(r)).map((r) => r.email)));
 
   return (
     <div>
@@ -502,6 +534,7 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
                 <th>Naam</th>
                 <th>E-mail</th>
                 <th>Bron</th>
+                <th>Deelname</th>
                 <th>Verstuurd</th>
                 <th>Evaluatie</th>
                 {data.bijlagen.map((b) => (
@@ -515,18 +548,27 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
                 const d = r.deelnemer;
                 const res = resultaten[r.email];
                 return (
-                  <tr key={r.email}>
+                  <tr key={r.email} style={r.inschrijving?.nietDeelgenomen ? { opacity: 0.55 } : undefined}>
                     <td>
                       <input
                         type="checkbox"
                         aria-label={`Selecteer ${r.email}`}
                         checked={geselecteerd.has(r.email)}
+                        disabled={r.inschrijving?.nietDeelgenomen}
+                        title={r.inschrijving?.nietDeelgenomen ? 'Niet deelgenomen: krijgt geen mail' : undefined}
                         onChange={(e) => toggle(r.email, e.target.checked)}
                       />
                     </td>
                     <td>{r.naam ?? '—'}</td>
                     <td>{r.email}</td>
                     <td>{r.bron === 'INSCHRIJVING' ? 'Inschrijving' : 'Manueel'}</td>
+                    <td>
+                      {r.inschrijving ? (
+                        <NietDeelgenomenButton registrationId={r.inschrijving.id} nietDeelgenomen={r.inschrijving.nietDeelgenomen} />
+                      ) : (
+                        '—'
+                      )}
+                    </td>
                     <td>
                       {d && d.aantalVerstuurd > 0
                         ? `${d.aantalVerstuurd}× · ${new Date(d.laatstVerstuurdOp!).toLocaleDateString('nl-BE')}`
@@ -550,7 +592,7 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
               })}
               {rijen.length === 0 && (
                 <tr>
-                  <td colSpan={7 + data.bijlagen.length} style={{ textAlign: 'center', color: 'var(--text-mid)' }}>
+                  <td colSpan={8 + data.bijlagen.length} style={{ textAlign: 'center', color: 'var(--text-mid)' }}>
                     Nog geen inschrijvingen. Voeg hieronder manueel adressen toe.
                   </td>
                 </tr>

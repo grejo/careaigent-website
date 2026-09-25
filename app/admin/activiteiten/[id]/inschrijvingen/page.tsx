@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import DeleteRegistrationButton from '@/components/admin/DeleteRegistrationButton';
+import NietDeelgenomenButton from '@/components/admin/NietDeelgenomenButton';
 import ToggleActivityFlagButton from '@/components/admin/ToggleActivityFlagButton';
 import CopyButton from '@/components/admin/CopyButton';
 import { isAfgelopen } from '@/lib/activityStatus';
@@ -19,6 +20,7 @@ export default async function InschrijvingenPage({ params }: { params: Promise<{
   if (!activity) notFound();
 
   const afgelopen = isAfgelopen(activity);
+  const afwezig = registrations.filter((r) => r.nietDeelgenomen).length;
   const algemeneLink = `${siteUrl()}/evaluatie?editie=${activity.slug}`;
 
   return (
@@ -95,9 +97,14 @@ export default async function InschrijvingenPage({ params }: { params: Promise<{
       <p style={{ color: 'var(--text-mid)', marginBottom: '16px' }}>
         {registrations.length} inschrijving{registrations.length !== 1 ? 'en' : ''}
         {activity.maxParticipants ? ` / max. ${activity.maxParticipants}` : ''}
+        {afwezig > 0 && ` · ${registrations.length - afwezig} deelgenomen, ${afwezig} niet deelgenomen`}
+      </p>
+      <p style={{ color: 'var(--text-mid)', fontSize: '0.8rem', marginTop: '-8px', marginBottom: '16px' }}>
+        Wie niet kwam opdagen, zet je op &lsquo;Niet deelgenomen&rsquo;: die persoon krijgt geen deelnemersmail en telt niet
+        mee in het responspercentage van de evaluatie. Dat kan je altijd terugdraaien; de gegevens blijven bewaard.
       </p>
 
-      <div className="admin-table-card">
+      <div className="admin-table-card" style={{ overflowX: 'auto' }}>
         <table className="admin-table">
           <thead>
             <tr>
@@ -112,15 +119,23 @@ export default async function InschrijvingenPage({ params }: { params: Promise<{
           </thead>
           <tbody>
             {registrations.map((r) => (
-              <tr key={r.id}>
-                <td>{r.voornaam} {r.naam}</td>
+              <tr key={r.id} style={r.nietDeelgenomen ? { opacity: 0.55 } : undefined}>
+                <td>
+                  {r.voornaam} {r.naam}
+                  {r.nietDeelgenomen && (
+                    <span className="admin-muted" style={{ display: 'block', fontSize: '0.75rem' }}>niet deelgenomen</span>
+                  )}
+                </td>
                 <td><a href={`mailto:${r.email}`}>{r.email}</a></td>
                 <td>{r.telefoon}</td>
                 <td>{r.instelling}</td>
                 <td>{r.functie}</td>
                 <td>{r.createdAt.toLocaleDateString('nl-BE')}</td>
                 <td>
-                  <DeleteRegistrationButton registrationId={r.id} />
+                  <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <NietDeelgenomenButton registrationId={r.id} nietDeelgenomen={r.nietDeelgenomen} />
+                    <DeleteRegistrationButton registrationId={r.id} />
+                  </div>
                 </td>
               </tr>
             ))}
