@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { MailSoort } from '@prisma/client';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/db';
-import { MAIL_REGISTRY } from '@/lib/mailRegistry';
+import { MAIL_REGISTRY, VOORBEELD_TOKEN } from '@/lib/mailRegistry';
 import { siteUrl } from '@/lib/site';
 import { gekozenBijlagen, handoutsVoor, previewSchema } from '@/lib/deelnemerMail';
 import { eersteFout } from '@/lib/mailSchemas';
@@ -27,8 +27,8 @@ export async function POST(req: Request, context: { params: Promise<{ id: string
     {
       voornaam: 'An',
       activiteit,
-      evaluatieUrl: parsed.data.metEvaluatie ? `${siteUrl()}/evaluatie/t/voorbeeld` : null,
-      handouts: handoutsVoor('voorbeeld', bijlagen),
+      evaluatieUrl: parsed.data.metEvaluatie ? `${siteUrl()}/evaluatie/t/${VOORBEELD_TOKEN}` : null,
+      handouts: handoutsVoor(VOORBEELD_TOKEN, bijlagen),
     },
     instelling ?? undefined,
   );
