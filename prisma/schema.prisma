@@ -42,6 +42,9 @@ model Registration {
   instelling String
   functie    String
   extraData  Json     @default("{}")
+  /// Ingeschreven maar niet komen opdagen: krijgt geen deelnemersmail en telt
+  /// niet mee als deelnemer (bv. in het responspercentage). Omkeerbaar.
+  nietDeelgenomen Boolean @default(false)
   createdAt  DateTime @default(now())
 }
 

@@ -33,8 +33,17 @@ export async function POST(req: Request, context: Ctx) {
   }
 
   const resultaten: { email: string; ok: boolean; reason?: string }[] = [];
+  const afwezigen = await prisma.registration.findMany({
+    where: { activityId: id, nietDeelgenomen: true },
+    select: { email: true },
+  });
+  const afwezig = new Set(afwezigen.map((r) => r.email.trim().toLowerCase()));
 
   for (const o of ontvangers) {
+    if (afwezig.has(o.email)) {
+      resultaten.push({ email: o.email, ok: false, reason: 'Niet deelgenomen' });
+      continue;
+    }
     const bestaand = await prisma.deelnemerMail.findUnique({
       where: { activityId_email: { activityId: id, email: o.email } },
       select: { isTest: true },

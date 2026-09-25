@@ -2,7 +2,7 @@ import type { Registration } from '@prisma/client';
 import { stringify } from 'csv-stringify/sync';
 import ExcelJS from 'exceljs';
 
-const FIXED_KEYS = ['naam', 'voornaam', 'email', 'telefoon', 'instelling', 'functie', 'createdAt'] as const;
+const FIXED_KEYS = ['naam', 'voornaam', 'email', 'telefoon', 'instelling', 'functie', 'deelgenomen', 'createdAt'] as const;
 
 function getExtraKeys(registrations: Registration[]): string[] {
   const keys = new Set<string>();
@@ -23,6 +23,7 @@ function toRow(r: Registration, extraKeys: string[]): Record<string, string> {
     telefoon: r.telefoon,
     instelling: r.instelling,
     functie: r.functie,
+    deelgenomen: r.nietDeelgenomen ? 'nee' : 'ja',
     createdAt: r.createdAt.toISOString(),
   };
   for (const k of extraKeys) {

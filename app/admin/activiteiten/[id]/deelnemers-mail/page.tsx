@@ -18,7 +18,7 @@ export default async function DeelnemersMailPage({ params }: { params: Promise<{
     prisma.registration.findMany({
       where: { activityId: id },
       orderBy: [{ naam: 'asc' }, { voornaam: 'asc' }],
-      select: { voornaam: true, naam: true, email: true },
+      select: { id: true, voornaam: true, naam: true, email: true, nietDeelgenomen: true },
     }),
     prisma.deelnemerMail.findMany({
       where: { activityId: id, isTest: false },
@@ -35,7 +35,12 @@ export default async function DeelnemersMailPage({ params }: { params: Promise<{
   const data: ClientData = {
     activityId: id,
     evaluatieOpen: activiteit.evaluatieOpen,
-    inschrijvingen: inschrijvingen.map((r) => ({ email: r.email.trim().toLowerCase(), naam: `${r.voornaam} ${r.naam}`.trim() })),
+    inschrijvingen: inschrijvingen.map((r) => ({
+      id: r.id,
+      email: r.email.trim().toLowerCase(),
+      naam: `${r.voornaam} ${r.naam}`.trim(),
+      nietDeelgenomen: r.nietDeelgenomen,
+    })),
     deelnemers: deelnemerMails.map((d) => ({
       ...d,
       laatstVerstuurdOp: d.laatstVerstuurdOp?.toISOString() ?? null,
