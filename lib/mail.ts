@@ -91,8 +91,13 @@ export type SendMailOpts = {
   ontvangerEmail?: string;
   ontvangerNaam?: string;
   replyToContext?: string;
-  /** Testmodus: negeert `enabled`, gebruikt de meegegeven teksten en stuurt enkel naar `naar`. */
+  /**
+   * Testmodus: negeert `enabled` en stuurt enkel naar `naar`. Zonder `overrides`
+   * gelden de opgeslagen teksten, zodat je exact de echte mail ziet.
+   */
   test?: { naar: Ontvanger; overrides?: MailTekstOverrides };
+  /** Gewone verzending, maar met "[TEST]" in het onderwerp (bv. melding na een testevaluatie). */
+  alsTest?: boolean;
 };
 
 /** Legt de instelling per mailsoort over de standaard en levert af. */
@@ -107,8 +112,12 @@ export async function sendMail<S extends MailSoort>(
   const replyTo = def.replyToModus === 'CONTEXT' ? opts.replyToContext : instelbareReplyTo;
   const bijlagen = def.bijlagen?.(ctx);
 
+  const opgeslagen: MailTekstOverrides | undefined = instelling
+    ? { subject: instelling.subject, intro: instelling.intro, footerNote: instelling.footerNote }
+    : undefined;
+
   if (opts.test) {
-    const built = def.build(ctx, opts.test.overrides);
+    const built = def.build(ctx, opts.test.overrides ?? opgeslagen);
     return deliver(
       `[TEST] ${built.subject}`,
       built.html,
@@ -132,11 +141,15 @@ export async function sendMail<S extends MailSoort>(
     ontvangers = opts.ontvangerEmail ? [{ email: opts.ontvangerEmail, naam: opts.ontvangerNaam ?? '' }] : [];
   }
 
-  const overrides: MailTekstOverrides | undefined = instelling
-    ? { subject: instelling.subject, intro: instelling.intro, footerNote: instelling.footerNote }
-    : undefined;
-  const built = def.build(ctx, overrides);
-  return deliver(built.subject, built.html, ontvangers, def.payloadContext(ctx), replyTo, bijlagen);
+  const built = def.build(ctx, opgeslagen);
+  return deliver(
+    opts.alsTest ? `[TEST] ${built.subject}` : built.subject,
+    built.html,
+    ontvangers,
+    { ...def.payloadContext(ctx), ...(opts.alsTest ? { test: true } : {}) },
+    replyTo,
+    bijlagen,
+  );
 }
 
 /** "Stuur deze mail naar mij" in /admin/mail: voorbeelddata, niet-opgeslagen teksten. */
@@ -160,11 +173,13 @@ export function sendInschrijvingMelding(ctx: InschrijvingMeldingContext) {
   return sendMail(MailSoort.INSCHRIJVING_MELDING_ADMIN, ctx, { replyToContext: ctx.email });
 }
 
-export function sendEvaluatieMelding(ctx: EvaluatieMeldingContext) {
-  return sendMail(MailSoort.EVALUATIE_MELDING_ADMIN, ctx);
+export function sendEvaluatieMelding(ctx: EvaluatieMeldingContext, opts: { alsTest?: boolean } = {}) {
+  return sendMail(MailSoort.EVALUATIE_MELDING_ADMIN, ctx, { alsTest: opts.alsTest });
 }
 
-export function sendDeelnemerUitnodiging(to: Ontvanger, ctx: DeelnemerUitnodigingContext) {
+/** Met `test`: echte mail (echte links) naar enkel die ontvanger, met "[TEST]" en ongeacht `enabled`. */
+export function sendDeelnemerUitnodiging(to: Ontvanger, ctx: DeelnemerUitnodigingContext, opts: { test?: boolean } = {}) {
+  if (opts.test) return sendMail(MailSoort.DEELNEMER_EVALUATIE_UITNODIGING, ctx, { test: { naar: to } });
   return sendMail(MailSoort.DEELNEMER_EVALUATIE_UITNODIGING, ctx, {
     ontvangerEmail: to.email,
     ontvangerNaam: to.naam,

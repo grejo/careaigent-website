@@ -18,7 +18,7 @@ export default async function ActiviteitenPage({
 
   const activities = await prisma.activity.findMany({
     orderBy: { dateStart: 'asc' },
-    include: { _count: { select: { registrations: true, evaluaties: true } } },
+    include: { _count: { select: { registrations: true, evaluaties: { where: { isTest: false } } } } },
   });
 
   const metStatus = activities.map((a) => ({ ...a, status: activityStatus(a) }));

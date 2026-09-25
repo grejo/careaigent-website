@@ -70,9 +70,11 @@ export async function POST(req: Request) {
           antwoorden: resultaat.antwoorden,
           kennisScore,
           c1Opvolging: resultaat.c1Opvolging,
+          isTest: toegang.isTest,
         },
       });
-      if (resultaat.c1Opvolging && resultaat.email) {
+      // Geen opvolgcontact bij een test: dat zou later een echte opvolgmail geven.
+      if (resultaat.c1Opvolging && resultaat.email && !toegang.isTest) {
         await tx.opvolgContact.createMany({
           data: [{ activityId, email: resultaat.email, token: nieuwToken(), verwijderOp: verwijderDatum() }],
           skipDuplicates: true,
@@ -88,8 +90,11 @@ export async function POST(req: Request) {
   }
 
   await ruimVerlopenContactenOp();
-  const aantalEvaluaties = await prisma.evaluatieAntwoord.count({ where: { activityId } });
-  const melding = await sendEvaluatieMelding({ activiteit: toegang.activiteit, aantalEvaluaties });
+  const aantalEvaluaties = await prisma.evaluatieAntwoord.count({ where: { activityId, isTest: false } });
+  const melding = await sendEvaluatieMelding(
+    { activiteit: toegang.activiteit, aantalEvaluaties },
+    { alsTest: toegang.isTest },
+  );
   if (!melding.ok) console.info('[evaluatie] Admin-melding niet verstuurd:', melding.reason);
 
   return NextResponse.json({ kennisScore, feedback }, { status: 201 });

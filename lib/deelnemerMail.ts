@@ -1,7 +1,9 @@
 import { z } from 'zod';
 import { prisma } from './db';
 import { siteUrl } from './site';
-import type { EmailKnop } from './emailTemplate';
+import { sendDeelnemerUitnodiging, type MailResultaat } from './mail';
+import type { Handouts } from './mailRegistry';
+import { hashToken, nieuwToken } from './tokens';
 
 export const MAX_PER_VERZENDING = 10;
 
@@ -22,9 +24,69 @@ export const verzendSchema = z.object({
 
 export const previewSchema = verzendSchema.pick({ metEvaluatie: true, bijlageIds: true });
 
-/** Downloadknoppen voor één ontvanger (getrackte URL's, nooit de externe link zelf). */
-export function downloadKnoppen(downloadToken: string, bijlagen: { id: string; titel: string }[]): EmailKnop[] {
-  return bijlagen.map((b) => ({ label: b.titel, url: `${siteUrl()}/d/${downloadToken}/${b.id}` }));
+/**
+ * Eén persoonlijke handoutpagina per ontvanger; de pagina linkt per document
+ * naar de getrackte download (nooit rechtstreeks naar de externe link).
+ */
+export function handoutsVoor(downloadToken: string, bijlagen: { titel: string }[]): Handouts | null {
+  if (bijlagen.length === 0) return null;
+  return { url: `${siteUrl()}/d/${downloadToken}`, titels: bijlagen.map((b) => b.titel) };
+}
+
+type Ontvanger = {
+  id: string;
+  email: string;
+  naam: string | null;
+  downloadToken: string;
+  bijlageIds: string[];
+  evaluatieIngevuld: boolean;
+};
+
+/**
+ * Verstuurt de deelnemersmail naar één ontvanger. Per verzending een nieuw,
+ * eenmalig evaluatietoken; enkel de hash wordt bewaard, en pas nadat de mail
+ * vertrokken is. Met `test` gaat de mail als "[TEST]" enkel naar dit adres.
+ */
+export async function verstuurNaarDeelnemer(
+  dm: Ontvanger,
+  activiteit: Parameters<typeof sendDeelnemerUitnodiging>[1]['activiteit'],
+  bijlagen: { id: string; titel: string }[],
+  metEvaluatie: boolean,
+  opts: { test?: boolean } = {},
+): Promise<MailResultaat> {
+  // Wie al invulde, krijgt geen nieuwe evaluatielink (wel de documenten).
+  // Een test mag onbeperkt herhaald worden.
+  const evalLink = metEvaluatie && (!dm.evaluatieIngevuld || Boolean(opts.test));
+  if (!evalLink && bijlagen.length === 0) return { ok: false, reason: 'Evaluatie al ingevuld' };
+  const token = evalLink ? nieuwToken() : null;
+
+  const res = await sendDeelnemerUitnodiging(
+    { email: dm.email, naam: dm.naam ?? '' },
+    {
+      voornaam: voornaamVan(dm.naam),
+      activiteit,
+      evaluatieUrl: token ? `${siteUrl()}/evaluatie/t/${token}` : null,
+      handouts: handoutsVoor(dm.downloadToken, bijlagen),
+    },
+    opts,
+  );
+
+  if (res.ok) {
+    await prisma.deelnemerMail.update({
+      where: { id: dm.id },
+      data: {
+        laatstVerstuurdOp: new Date(),
+        aantalVerstuurd: { increment: 1 },
+        // Eerder verstuurde documenten blijven op de handoutpagina staan.
+        bijlageIds: Array.from(new Set([...dm.bijlageIds, ...bijlagen.map((b) => b.id)])),
+        // Nieuw token vervangt het vorige: oudere links werken niet meer.
+        ...(token ? { evalTokenHash: hashToken(token) } : {}),
+        // Nieuwe testlink: de test mag opnieuw ingevuld worden.
+        ...(token && opts.test ? { evaluatieIngevuld: false } : {}),
+      },
+    });
+  }
+  return res;
 }
 
 /** Bijlagen van deze activiteit in de gevraagde volgorde; onbekende ID's vallen weg. */

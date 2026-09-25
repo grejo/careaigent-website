@@ -30,6 +30,16 @@ export type ClientData = {
   inschrijvingen: { email: string; naam: string }[];
   deelnemers: Deelnemer[];
   bijlagen: Bijlage[];
+  /** Echte testmail naar de ingelogde beheerder; telt nergens mee. */
+  test: {
+    mijnEmail: string | null;
+    ontvanger: {
+      email: string;
+      laatstVerstuurdOp: string | null;
+      evaluatieIngevuld: boolean;
+      downloads: Record<string, number>;
+    } | null;
+  };
 };
 
 type Rij = {
@@ -183,6 +193,42 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
     router.refresh();
   }
 
+  // ── Echte testmail naar mezelf ──
+  const [testMetEvaluatie, setTestMetEvaluatie] = useState(true);
+  const [testBezig, setTestBezig] = useState(false);
+  const [testMelding, setTestMelding] = useState<Melding>(null);
+
+  async function stuurTest() {
+    if (!testMetEvaluatie && bijlageIds.length === 0) {
+      setTestMelding({ kind: 'err', text: 'Kies de evaluatielink en/of minstens één bijlage.' });
+      return;
+    }
+    setTestBezig(true);
+    setTestMelding(null);
+    const res = await fetch(`${base}/deelnemers-mail/test`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ metEvaluatie: testMetEvaluatie, bijlageIds }),
+    }).catch(() => null);
+    const body = res ? await res.json().catch(() => null) : null;
+    setTestBezig(false);
+    if (!res?.ok) {
+      setTestMelding({ kind: 'err', text: body?.error ?? 'Verzenden mislukt' });
+      return;
+    }
+    setTestMelding({ kind: 'ok', text: `Testmail verstuurd naar ${body.sentTo}. Open ze in je mailbox en doorloop alles zoals een deelnemer.` });
+    router.refresh();
+  }
+
+  async function wisTest() {
+    if (!window.confirm('Testmail, testdownloads en testantwoorden van deze activiteit wissen? Je testlinks werken daarna niet meer.')) return;
+    const res = await fetch(`${base}/deelnemers-mail/test`, { method: 'DELETE' });
+    if (res.ok) {
+      setTestMelding({ kind: 'ok', text: 'Test gewist.' });
+      router.refresh();
+    } else setTestMelding({ kind: 'err', text: 'Wissen mislukt' });
+  }
+
   // ── Bijlagen beheren ──
   const [bijlageMelding, setBijlageMelding] = useState<Melding>(null);
   const [uploadBezig, setUploadBezig] = useState(false);
@@ -295,7 +341,7 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
         <h2>Bijlagen</h2>
         <p className="admin-muted">
           Bestanden tot 4 MB (pdf, docx, pptx, xlsx, png, jpg) of een link (OneDrive, SharePoint, YouTube…). In de mail
-          staat altijd een persoonlijke downloadknop, zodat je ziet wie het document opende.
+          staat één knop naar een persoonlijke handoutpagina met alle gekozen documenten, zodat je per document ziet wie het opende.
         </p>
         {data.bijlagen.length > 0 && (
           <ul style={{ listStyle: 'none', padding: 0, margin: '12px 0' }}>
@@ -367,7 +413,7 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
                 checked={bijlageIds.includes(b.id)}
                 onChange={(e) => setBijlageIds((ids) => (e.target.checked ? [...ids, b.id] : ids.filter((x) => x !== b.id)))}
               />
-              Downloadknop: {b.titel}
+              Op de handoutpagina: {b.titel}
             </label>
           ))}
         </div>
@@ -380,6 +426,53 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
             <p className="admin-muted" style={{ fontFamily: 'monospace' }}>Onderwerp: {preview.subject}</p>
             <iframe title="Voorbeeld deelnemersmail" srcDoc={preview.html} className="admin-preview" sandbox="" />
           </>
+        )}
+      </div>
+
+      {/* Echte test */}
+      <div className="admin-card" style={{ borderLeft: '4px solid var(--teal)' }}>
+        <h2>Echte test naar mezelf</h2>
+        <p className="admin-muted">
+          Verstuurt deze mail met een echte evaluatielink en een echte handoutpagina naar{' '}
+          <strong>{data.test.mijnEmail ?? 'je eigen adres'}</strong>, met &lsquo;[TEST]&rsquo; in het onderwerp. Je
+          downloads en je antwoorden tellen nergens mee. De testlink werkt ook als de evaluatie nog dicht staat, en je
+          kan de test zo vaak herhalen als je wil. De bijlagen hierboven gelden ook voor de test.
+        </p>
+        <label className="radio-label">
+          <input type="checkbox" checked={testMetEvaluatie} onChange={(e) => setTestMetEvaluatie(e.target.checked)} />
+          Evaluatielink meesturen
+        </label>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '10px' }}>
+          <button type="button" className="btn-primary" onClick={stuurTest} disabled={testBezig || !data.test.mijnEmail}>
+            {testBezig ? 'Versturen…' : 'Stuur testmail naar mij'}
+          </button>
+          {data.test.ontvanger && (
+            <>
+              <a href={`/admin/evaluatie?activiteit=${data.activityId}#test`} className="btn-secondary">
+                Bekijk testantwoorden
+              </a>
+              <button type="button" className="btn-secondary" onClick={wisTest}>
+                Test wissen
+              </button>
+            </>
+          )}
+        </div>
+        {testMelding && <p className={`admin-banner ${testMelding.kind}`}>{testMelding.text}</p>}
+        {data.test.ontvanger && (
+          <ul className="admin-muted" style={{ margin: '12px 0 0', paddingLeft: '18px' }}>
+            <li>
+              Laatst verstuurd:{' '}
+              {data.test.ontvanger.laatstVerstuurdOp
+                ? new Date(data.test.ontvanger.laatstVerstuurdOp).toLocaleString('nl-BE')
+                : 'nog niet (verzending mislukt)'}
+            </li>
+            <li>Evaluatie ingevuld: {data.test.ontvanger.evaluatieIngevuld ? 'ja' : 'nee'}</li>
+            {data.bijlagen.map((b) => (
+              <li key={b.id}>
+                {b.titel}: {data.test.ontvanger?.downloads[b.id] ?? 0} keer gedownload
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 

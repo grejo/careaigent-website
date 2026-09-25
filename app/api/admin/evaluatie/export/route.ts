@@ -8,9 +8,12 @@ export async function GET(req: Request) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const activityId = new URL(req.url).searchParams.get('activiteit') || null;
+  const params = new URL(req.url).searchParams;
+  const activityId = params.get('activiteit') || null;
+  // Standaard enkel echte antwoorden; ?test=1 geeft enkel de testantwoorden.
+  const isTest = params.get('test') === '1';
   const rijen = await prisma.evaluatieAntwoord.findMany({
-    where: activityId ? { activityId } : {},
+    where: { isTest, ...(activityId ? { activityId } : {}) },
     orderBy: [{ createdAt: 'asc' }],
     include: { activity: { select: { title: true, slug: true } } },
   });
@@ -29,7 +32,8 @@ export async function GET(req: Request) {
       kennisScore: r.kennisScore,
     })),
   );
-  const naam = activityId && rijen[0] ? `evaluatie-${rijen[0].activity.slug}` : 'evaluatie-alle-edities';
+  const basis = activityId && rijen[0] ? `evaluatie-${rijen[0].activity.slug}` : 'evaluatie-alle-edities';
+  const naam = isTest ? `${basis}-TEST` : basis;
   return new NextResponse(new Uint8Array(csv), {
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',

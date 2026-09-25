@@ -4,7 +4,7 @@ import { auth } from '@/auth';
 import { prisma } from '@/lib/db';
 import { MAIL_REGISTRY } from '@/lib/mailRegistry';
 import { siteUrl } from '@/lib/site';
-import { downloadKnoppen, gekozenBijlagen, previewSchema } from '@/lib/deelnemerMail';
+import { gekozenBijlagen, handoutsVoor, previewSchema } from '@/lib/deelnemerMail';
 import { eersteFout } from '@/lib/mailSchemas';
 
 /** Voorbeeld van de deelnemersmail met de echte activiteit, bijlagen en opgeslagen teksten. */
@@ -28,7 +28,7 @@ export async function POST(req: Request, context: { params: Promise<{ id: string
       voornaam: 'An',
       activiteit,
       evaluatieUrl: parsed.data.metEvaluatie ? `${siteUrl()}/evaluatie/t/voorbeeld` : null,
-      downloads: downloadKnoppen('voorbeeld', bijlagen),
+      handouts: handoutsVoor('voorbeeld', bijlagen),
     },
     instelling ?? undefined,
   );
