@@ -2,6 +2,12 @@ export function datumLabel(d: Date): string {
   return d.toLocaleDateString('nl-BE', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Brussels' });
 }
 
+export const VOORBEELD_MELDING = {
+  titel: 'Dit is een voorbeeldlink',
+  tekst:
+    'Deze link komt uit een testmail met voorbeeldgegevens en werkt daarom niet. Wil je de evaluatie en de handouts echt testen? Gebruik dan in het beheer Activiteiten › Mail naar deelnemers › "Stuur testmail naar mij".',
+} as const;
+
 export const TOEGANG_MELDING = {
   onbekend: { titel: 'Link niet gevonden', tekst: 'Deze evaluatielink is ongeldig of verlopen. Controleer de link in je mail.' },
   gesloten: { titel: 'Deze evaluatie is afgesloten', tekst: 'Je kan deze evaluatie niet meer invullen. Bedankt voor je interesse.' },

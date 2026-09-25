@@ -49,6 +49,7 @@ describe('MAIL_REGISTRY', () => {
     expect(html).toContain('Vul de evaluatie in');
     expect(html.match(/Download de handouts/g)).toHaveLength(1);
     expect(html).toContain('/d/voorbeeld"');
+    expect(html).toContain('/evaluatie/t/voorbeeld"');
     expect(html).toContain('<li>Slides AI-Ambassadeur (pdf)</li>');
     expect(html).toContain('<li>Werkblad prompts (docx)</li>');
   });

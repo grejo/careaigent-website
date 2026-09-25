@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { vindHandouts } from '@/lib/download';
 import { TOEGELATEN_MIME } from '@/lib/bijlagen';
+import { VOORBEELD_TOKEN } from '@/lib/mailRegistry';
+import { VOORBEELD_MELDING } from '@/lib/evaluatie/weergave';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'Handouts', robots: { index: false, follow: false } };
@@ -15,7 +17,8 @@ function typeLabel(soort: 'BESTAND' | 'LINK', mimeType: string | null, grootte: 
 /** Persoonlijke handoutpagina: één link in de mail, hier elk document apart (en apart geteld). */
 export default async function HandoutsPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
-  const gevonden = await vindHandouts(token);
+  const voorbeeld = token === VOORBEELD_TOKEN;
+  const gevonden = voorbeeld ? null : await vindHandouts(token);
 
   return (
     <div className="eval-page">
@@ -27,6 +30,11 @@ export default async function HandoutsPage({ params }: { params: Promise<{ token
               <>
                 <h1>{gevonden.activiteit}</h1>
                 <p>Klik op een document om het te downloaden of te openen.</p>
+              </>
+            ) : voorbeeld ? (
+              <>
+                <h1>{VOORBEELD_MELDING.titel}</h1>
+                <p>{VOORBEELD_MELDING.tekst}</p>
               </>
             ) : (
               <>

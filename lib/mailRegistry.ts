@@ -95,6 +95,13 @@ function wanneer(a: ActiviteitInfo): string {
   return a.dateEnd ? `${datum}, ${formatUur(a.dateStart)} – ${formatUur(a.dateEnd)}` : `${datum}, ${formatUur(a.dateStart)}`;
 }
 
+/**
+ * Token in de voorbeeldlinks van testmails met voorbeeldgegevens (Admin › Mail,
+ * voorbeeld op het deelnemersmail-scherm). De evaluatie- en handoutpagina's
+ * tonen hiervoor een uitleg in plaats van "link niet gevonden".
+ */
+export const VOORBEELD_TOKEN = 'voorbeeld';
+
 function voorbeeldActiviteit(): ActiviteitInfo {
   const start = new Date();
   start.setDate(start.getDate() + 14);
@@ -355,9 +362,9 @@ export const MAIL_REGISTRY: { [S in MailSoort]: MailSoortDefinitie<S> } = {
     voorbeeldContext: () => ({
       voornaam: 'An',
       activiteit: voorbeeldActiviteit(),
-      evaluatieUrl: `${siteUrl()}/evaluatie/t/voorbeeldtoken`,
+      evaluatieUrl: `${siteUrl()}/evaluatie/t/${VOORBEELD_TOKEN}`,
       handouts: {
-        url: `${siteUrl()}/d/voorbeeld`,
+        url: `${siteUrl()}/d/${VOORBEELD_TOKEN}`,
         titels: ['Slides AI-Ambassadeur (pdf)', 'Werkblad prompts (docx)'],
       },
     }),

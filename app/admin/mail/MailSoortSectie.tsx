@@ -188,6 +188,13 @@ export default function MailSoortSectie({ data }: { data: MailSoortData }) {
           <h3>Testmail</h3>
           <p className="admin-muted">
             Verstuurt deze mail met voorbeeldgegevens en de tekst hierboven, ook als ze uit staat. Enkel naar het opgegeven adres.
+            {data.soort === 'DEELNEMER_EVALUATIE_UITNODIGING' && (
+              <>
+                {' '}
+                De evaluatie- en downloadlinks in deze voorbeeldmail werken niet. Voor een echte test met werkende links gebruik
+                je Activiteiten › Mail naar deelnemers › &lsquo;Stuur testmail naar mij&rsquo;.
+              </>
+            )}
           </p>
           <div className="admin-row">
             <div className="form-group" style={{ flex: 1, minWidth: '220px', marginBottom: 0 }}>
