@@ -3,6 +3,7 @@ import { vindHandouts } from '@/lib/download';
 import { TOEGELATEN_MIME } from '@/lib/bijlagen';
 import { VOORBEELD_TOKEN } from '@/lib/mailRegistry';
 import { VOORBEELD_MELDING } from '@/lib/evaluatie/weergave';
+import DownloadAlles from './DownloadAlles';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'Handouts', robots: { index: false, follow: false } };
@@ -29,7 +30,19 @@ export default async function HandoutsPage({ params }: { params: Promise<{ token
             {gevonden ? (
               <>
                 <h1>{gevonden.activiteit}</h1>
-                <p>Klik op een document om het te downloaden of te openen.</p>
+                <p>Klik op een document om het te downloaden of te openen, of download alles in één keer.</p>
+                {gevonden.bijlagen.length > 1 && (
+                  <DownloadAlles
+                    token={token}
+                    zipNaam={`handouts-${gevonden.slug}.zip`}
+                    bijlagen={gevonden.bijlagen.map((b) => ({
+                      id: b.id,
+                      soort: b.soort,
+                      titel: b.titel,
+                      bestandsnaam: b.bestandsnaam,
+                    }))}
+                  />
+                )}
               </>
             ) : voorbeeld ? (
               <>

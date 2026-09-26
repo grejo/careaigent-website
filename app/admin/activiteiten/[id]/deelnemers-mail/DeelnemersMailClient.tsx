@@ -262,32 +262,68 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
   // ── Bijlagen beheren ──
   const [bijlageMelding, setBijlageMelding] = useState<Melding>(null);
   const [uploadBezig, setUploadBezig] = useState(false);
+  const [uploadVoortgang, setUploadVoortgang] = useState('');
   const [linkTitel, setLinkTitel] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
 
+  /** Laadt één of meer bestanden op, elk in een eigen verzoek (max 4 MB per bestand). */
   async function upload(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
-    const fd = new FormData(form);
-    const file = fd.get('file');
-    if (!(file instanceof File) || file.size === 0) return;
-    if (file.size > 4 * 1024 * 1024) {
-      setBijlageMelding({ kind: 'err', text: 'Bestand is groter dan 4 MB. Plak in dat geval een link (bv. OneDrive).' });
-      return;
-    }
+    const invoer = new FormData(form);
+    const bestanden = invoer.getAll('file').filter((f): f is File => f instanceof File && f.size > 0);
+    if (bestanden.length === 0) return;
+    // Een eigen titel geldt enkel als je één bestand kiest; anders de bestandsnaam.
+    const titel = bestanden.length === 1 ? String(invoer.get('titel') ?? '').trim() : '';
+
     setUploadBezig(true);
     setBijlageMelding(null);
-    const res = await fetch(`${base}/bijlagen`, { method: 'POST', body: fd });
-    setUploadBezig(false);
-    const body = await res.json().catch(() => null);
-    if (!res.ok) {
-      setBijlageMelding({ kind: 'err', text: body?.error ?? 'Opladen mislukt' });
-      return;
+    const nieuweIds: string[] = [];
+    const fouten: string[] = [];
+    for (let i = 0; i < bestanden.length; i++) {
+      const file = bestanden[i];
+      setUploadVoortgang(`${i + 1} / ${bestanden.length}`);
+      if (file.size > 4 * 1024 * 1024) {
+        fouten.push(`${file.name}: groter dan 4 MB (plak een link, bv. OneDrive)`);
+        continue;
+      }
+      // Eerst inlezen: een bestand dat enkel online staat (bv. OneDrive "alleen online")
+      // of intussen gewijzigd werd, geeft dan meteen een duidelijke fout in plaats van
+      // een upload die blijft hangen.
+      let inhoud: ArrayBuffer;
+      try {
+        inhoud = await file.arrayBuffer();
+      } catch {
+        fouten.push(`${file.name}: kon het bestand niet lezen (staat het enkel online in OneDrive? Download het eerst naar je computer)`);
+        continue;
+      }
+      const fd = new FormData();
+      fd.append('file', new File([inhoud], file.name, { type: file.type }));
+      if (titel) fd.append('titel', titel);
+      try {
+        const res = await fetch(`${base}/bijlagen`, { method: 'POST', body: fd, signal: AbortSignal.timeout(90_000) });
+        const body = await res.json().catch(() => null);
+        if (res.ok && body?.id) nieuweIds.push(body.id);
+        else fouten.push(`${file.name}: ${body?.error ?? `opladen mislukt (status ${res.status})`}`);
+      } catch (err) {
+        const timeout = err instanceof DOMException && err.name === 'TimeoutError';
+        fouten.push(`${file.name}: ${timeout ? 'opladen duurde te lang, probeer opnieuw' : 'netwerkfout, probeer opnieuw'}`);
+      }
     }
-    form.reset();
-    if (body?.id) setBijlageIds((ids) => [...ids, body.id]);
-    setBijlageMelding({ kind: 'ok', text: 'Bijlage opgeladen.' });
-    router.refresh();
+    setUploadBezig(false);
+    setUploadVoortgang('');
+
+    if (nieuweIds.length > 0) {
+      form.reset();
+      setBijlageIds((ids) => [...ids, ...nieuweIds]);
+      router.refresh();
+    }
+    const ok = `${nieuweIds.length} ${nieuweIds.length === 1 ? 'bestand' : 'bestanden'} opgeladen.`;
+    setBijlageMelding(
+      fouten.length === 0
+        ? { kind: 'ok', text: ok }
+        : { kind: nieuweIds.length ? 'warn' : 'err', text: `${nieuweIds.length ? `${ok} ` : ''}Niet gelukt: ${fouten.join('; ')}` },
+    );
   }
 
   async function voegLinkToe(e: React.FormEvent) {
@@ -398,17 +434,17 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
         )}
         <div className="admin-grid-2" style={{ marginTop: '12px' }}>
           <form onSubmit={upload}>
-            <h3 style={{ marginTop: 0 }}>Bestand opladen</h3>
+            <h3 style={{ marginTop: 0 }}>Bestanden opladen</h3>
             <div className="form-group">
-              <label htmlFor="bijlage-titel">Titel in de mail (optioneel)</label>
+              <label htmlFor="bijlage-titel">Titel in de mail (optioneel, enkel bij één bestand)</label>
               <input id="bijlage-titel" name="titel" type="text" maxLength={200} placeholder="bv. Slides AI-Ambassadeur (pdf)" />
             </div>
             <div className="form-group">
-              <label htmlFor="bijlage-file">Bestand</label>
-              <input id="bijlage-file" name="file" type="file" required accept=".pdf,.docx,.pptx,.xlsx,.png,.jpg,.jpeg" />
+              <label htmlFor="bijlage-file">Bestanden (je kan er meerdere tegelijk kiezen)</label>
+              <input id="bijlage-file" name="file" type="file" multiple required accept=".pdf,.docx,.pptx,.xlsx,.png,.jpg,.jpeg" />
             </div>
             <button type="submit" className="btn-secondary" disabled={uploadBezig}>
-              {uploadBezig ? 'Opladen…' : 'Opladen'}
+              {uploadBezig ? `Opladen… ${uploadVoortgang}` : 'Opladen'}
             </button>
           </form>
           <form onSubmit={voegLinkToe}>
