@@ -28,15 +28,15 @@ export async function vindHandouts(token: string) {
   if (!isTokenVorm(token)) return null;
   const dm = await prisma.deelnemerMail.findUnique({
     where: { downloadToken: token },
-    select: { activityId: true, bijlageIds: true, activity: { select: { title: true } } },
+    select: { activityId: true, bijlageIds: true, activity: { select: { title: true, slug: true } } },
   });
   if (!dm || dm.bijlageIds.length === 0) return null;
   const rijen = await prisma.activiteitBijlage.findMany({
     where: { activityId: dm.activityId, id: { in: dm.bijlageIds } },
-    select: { id: true, soort: true, titel: true, mimeType: true, grootte: true },
+    select: { id: true, soort: true, titel: true, bestandsnaam: true, mimeType: true, grootte: true },
   });
   // Volgorde zoals verstuurd.
   const bijlagen = dm.bijlageIds.map((id) => rijen.find((r) => r.id === id)).filter((r) => r !== undefined);
   if (bijlagen.length === 0) return null;
-  return { activiteit: dm.activity.title, bijlagen };
+  return { activiteit: dm.activity.title, slug: dm.activity.slug, bijlagen };
 }
