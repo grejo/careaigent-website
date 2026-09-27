@@ -12,6 +12,7 @@ const basis: Registration = {
   functie: 'Manager',
   extraData: {},
   nietDeelgenomen: false,
+  manueel: false,
   createdAt: new Date('2026-09-01T08:00:00Z'),
 };
 

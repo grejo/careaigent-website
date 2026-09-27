@@ -45,6 +45,8 @@ model Registration {
   /// Ingeschreven maar niet komen opdagen: krijgt geen deelnemersmail en telt
   /// niet mee als deelnemer (bv. in het responspercentage). Omkeerbaar.
   nietDeelgenomen Boolean @default(false)
+  /// Door een beheerder toegevoegd (niet via het publieke inschrijvingsformulier).
+  manueel    Boolean  @default(false)
   createdAt  DateTime @default(now())
 }
 

@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import NietDeelgenomenButton from '@/components/admin/NietDeelgenomenButton';
+import DeelnemerToevoegenForm from '@/components/admin/DeelnemerToevoegenForm';
 
 type Bijlage = {
   id: string;
@@ -28,7 +29,7 @@ type Deelnemer = {
 export type ClientData = {
   activityId: string;
   evaluatieOpen: boolean;
-  inschrijvingen: { id: string; email: string; naam: string; nietDeelgenomen: boolean }[];
+  inschrijvingen: { id: string; email: string; naam: string; instelling: string; manueel: boolean; nietDeelgenomen: boolean }[];
   deelnemers: Deelnemer[];
   bijlagen: Bijlage[];
   /** Echte testmail naar de ingelogde beheerder; telt nergens mee. */
@@ -46,6 +47,7 @@ export type ClientData = {
 type Rij = {
   email: string;
   naam: string | null;
+  instelling: string | null;
   bron: 'INSCHRIJVING' | 'MANUEEL';
   deelnemer: Deelnemer | null;
   /** Inschrijving bij dit adres (voor "niet deelgenomen"), of null bij een manueel adres. */
@@ -75,6 +77,8 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
         perEmail.set(i.email, {
           email: i.email,
           naam: i.naam,
+          instelling: i.instelling || null,
+          // Manueel toegevoegde deelnemer blijft voor het versturen een inschrijving.
           bron: 'INSCHRIJVING',
           deelnemer: null,
           inschrijving: { id: i.id, nietDeelgenomen: i.nietDeelgenomen },
@@ -86,6 +90,7 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
       perEmail.set(d.email, {
         email: d.email,
         naam: bestaand?.naam ?? d.naam,
+        instelling: bestaand?.instelling ?? null,
         bron: bestaand?.bron ?? (d.bron === 'INSCHRIJVING' ? 'INSCHRIJVING' : 'MANUEEL'),
         deelnemer: d,
         inschrijving: bestaand?.inschrijving ?? null,
@@ -114,6 +119,12 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rijen]);
   const [extraTekst, setExtraTekst] = useState('');
+  /** Los adres waarvoor naam en organisatie aangevuld worden (maakt een inschrijving). */
+  const [aanvullen, setAanvullen] = useState<string | null>(null);
+  const manueelToegevoegd = useMemo(
+    () => new Set(data.inschrijvingen.filter((i) => i.manueel).map((i) => i.email)),
+    [data.inschrijvingen],
+  );
   const [extraMelding, setExtraMelding] = useState<Melding>(null);
 
   function toggle(email: string, aan: boolean) {
@@ -135,7 +146,7 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
     const nieuw = geldig.filter((e) => !rijen.some((r) => r.email === e));
     setExtraRijen((r) => [
       ...r,
-      ...nieuw.map((email) => ({ email, naam: null, bron: 'MANUEEL' as const, deelnemer: null, inschrijving: null })),
+      ...nieuw.map((email) => ({ email, naam: null, instelling: null, bron: 'MANUEEL' as const, deelnemer: null, inschrijving: null })),
     ]);
     setGeselecteerd((s) => new Set([...Array.from(s), ...geldig]));
     setExtraTekst(ongeldig.join('\n'));
@@ -569,6 +580,7 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
                 <th aria-label="Selecteren" />
                 <th>Naam</th>
                 <th>E-mail</th>
+                <th>Organisatie</th>
                 <th>Bron</th>
                 <th>Deelname</th>
                 <th>Verstuurd</th>
@@ -595,9 +607,25 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
                         onChange={(e) => toggle(r.email, e.target.checked)}
                       />
                     </td>
-                    <td>{r.naam ?? '—'}</td>
+                    <td>
+                      {r.naam ?? '—'}
+                      {!r.inschrijving && (
+                        <button
+                          type="button"
+                          className="btn-secondary"
+                          style={{ display: 'block', marginTop: '4px', fontSize: '0.75rem', padding: '2px 8px', whiteSpace: 'nowrap' }}
+                          onClick={() => {
+                            setAanvullen(r.email);
+                            requestAnimationFrame(() => document.getElementById('deelnemer-voornaam')?.focus());
+                          }}
+                        >
+                          Naam & organisatie
+                        </button>
+                      )}
+                    </td>
                     <td>{r.email}</td>
-                    <td>{r.bron === 'INSCHRIJVING' ? 'Inschrijving' : 'Manueel'}</td>
+                    <td>{r.instelling ?? '—'}</td>
+                    <td>{r.bron === 'INSCHRIJVING' && !manueelToegevoegd.has(r.email) ? 'Inschrijving' : 'Manueel'}</td>
                     <td>
                       {r.inschrijving ? (
                         <NietDeelgenomenButton registrationId={r.inschrijving.id} nietDeelgenomen={r.inschrijving.nietDeelgenomen} />
@@ -628,13 +656,26 @@ export default function DeelnemersMailClient({ data }: { data: ClientData }) {
               })}
               {rijen.length === 0 && (
                 <tr>
-                  <td colSpan={8 + data.bijlagen.length} style={{ textAlign: 'center', color: 'var(--text-mid)' }}>
-                    Nog geen inschrijvingen. Voeg hieronder manueel adressen toe.
+                  <td colSpan={9 + data.bijlagen.length} style={{ textAlign: 'center', color: 'var(--text-mid)' }}>
+                    Nog geen inschrijvingen. Voeg hieronder deelnemers of losse adressen toe.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+        </div>
+
+        <div style={{ marginTop: '16px' }}>
+          <DeelnemerToevoegenForm
+            key={aanvullen ?? 'nieuw'}
+            activityId={data.activityId}
+            standaardEmail={aanvullen ?? undefined}
+            startOpen={aanvullen !== null}
+            onToegevoegd={(email) => {
+              setAanvullen(null);
+              setGeselecteerd((s) => new Set([...Array.from(s), email]));
+            }}
+          />
         </div>
 
         <div className="form-group" style={{ marginTop: '16px' }}>

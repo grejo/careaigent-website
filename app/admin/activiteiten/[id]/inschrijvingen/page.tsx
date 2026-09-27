@@ -4,6 +4,7 @@ import DeleteRegistrationButton from '@/components/admin/DeleteRegistrationButto
 import NietDeelgenomenButton from '@/components/admin/NietDeelgenomenButton';
 import ToggleActivityFlagButton from '@/components/admin/ToggleActivityFlagButton';
 import CopyButton from '@/components/admin/CopyButton';
+import DeelnemerToevoegenForm from '@/components/admin/DeelnemerToevoegenForm';
 import { isAfgelopen } from '@/lib/activityStatus';
 import { siteUrl } from '@/lib/site';
 import Link from 'next/link';
@@ -104,6 +105,10 @@ export default async function InschrijvingenPage({ params }: { params: Promise<{
         mee in het responspercentage van de evaluatie. Dat kan je altijd terugdraaien; de gegevens blijven bewaard.
       </p>
 
+      <div style={{ marginBottom: '16px' }}>
+        <DeelnemerToevoegenForm activityId={activity.id} />
+      </div>
+
       <div className="admin-table-card" style={{ overflowX: 'auto' }}>
         <table className="admin-table">
           <thead>
@@ -122,6 +127,9 @@ export default async function InschrijvingenPage({ params }: { params: Promise<{
               <tr key={r.id} style={r.nietDeelgenomen ? { opacity: 0.55 } : undefined}>
                 <td>
                   {r.voornaam} {r.naam}
+                  {r.manueel && (
+                    <span className="admin-muted" style={{ display: 'block', fontSize: '0.75rem' }}>manueel toegevoegd</span>
+                  )}
                   {r.nietDeelgenomen && (
                     <span className="admin-muted" style={{ display: 'block', fontSize: '0.75rem' }}>niet deelgenomen</span>
                   )}

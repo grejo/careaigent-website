@@ -12,6 +12,16 @@ export const registrationSchema = z.object({
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;
 
+/** Manueel toevoegen door een beheerder: telefoon en functie zijn optioneel. */
+export const manualRegistrationSchema = z.object({
+  voornaam: z.string().trim().min(1, 'Voornaam is verplicht'),
+  naam: z.string().trim().min(1, 'Naam is verplicht'),
+  email: z.string().trim().toLowerCase().email('Ongeldig e-mailadres'),
+  instelling: z.string().trim().min(1, 'Organisatie is verplicht'),
+  functie: z.string().trim().default(''),
+  telefoon: z.string().trim().default(''),
+});
+
 const extraFieldSchema = z.object({
   key: z.string().min(1),
   label: z.string().min(1),
